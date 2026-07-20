@@ -1,0 +1,3613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>NjalaMarket Pro | Premium Marketplace Malawi</title>
+    <meta name="description" content="NjalaMarket – Malawi's trusted marketplace. Buy, sell, rent, and find jobs across the country." />
+    <link rel="canonical" href="https://njalamarket.com" />
+    <meta property="og:title" content="NjalaMarket – Malawi's Premier Marketplace" />
+    <meta property="og:description" content="Buy, sell, rent, and find jobs in Malawi. Trusted by thousands daily." />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#0F2F40" />
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiTmphbGFNYXJrZXQiLCJzaG9ydF9uYW1lIjoiTmphbGFNYXJrZXQiLCJkZXNjcmlwdGlvbiI6Ik1hbGF3aSdzIFByZW1pZXIgTWFya2V0cGxhY2UiLCJzdGFydF91cmwiOiIuIiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbCw8c3ZnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zycgdmlld0JveD0nMCAwIDUxMiA1MTInPjxjaXJjbGUgY3g9JzI1NicgY3k9JzI1Nicgcj0nMjU2JyBmaWxsPScjMEYyRjQwJy8+PHRleHQgeD0nMjU2JyB5PScyODAnIGZvbnQtc2l6ZT0nMTUwJyBmaWxsPSd3aGl0ZScgdGV4dC1hbmNob3I9J21pZGRsZScgZm9udC1mYW1pbHk9J3NhbnMtc2VyaWYnPk5NPC90ZXh0Pjwvc3ZnPg=="LCJ0eXBlIjoiaW1hZ2Uvc3ZnK3htbCIsInNpemVzIjoiNTEyeDUxMiJ9XSwib3JpZW50YXRpb24iOiJwb3J0cmFpdCIsImRpc3BsYXkiOiJzdGFuZGFsb25lIn0=" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" />
+    <script src="https://cdn.socket.io/4.7.0/socket.io.min.js"></script>
+    <style>
+        /* ---------- All existing CSS (kept unchanged) ---------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --primary: #0F2F40;
+            --primary-light: #1A4A60;
+            --accent: #DD4B2B;
+            --accent-hover: #B4330F;
+            --bg: #F5F7FA;
+            --card-bg: #FFFFFF;
+            --text-primary: #0A1C2F;
+            --text-secondary: #4A6577;
+            --border: #E8EDF3;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+            --shadow-md: 0 8px 30px rgba(0,0,0,0.06);
+            --shadow-lg: 0 20px 40px rgba(0,0,0,0.1);
+            --radius: 24px;
+            --radius-sm: 12px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --danger: #DC3545;
+            --success: #28A745;
+            --warning: #FFC107;
+            --sidebar-width: 320px;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            display: flex;
+            min-height: 100vh;
+        }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--primary-light); border-radius: 20px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+        /* ---------- SIDEBAR ---------- */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: var(--sidebar-width);
+            background: var(--card-bg);
+            border-right: 1px solid var(--border);
+            padding: 1.5rem 1.25rem;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.3s ease;
+        }
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .sidebar-header .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .sidebar-header .logo span {
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .sidebar-header .logo i { -webkit-text-fill-color: var(--accent); font-size: 1.2rem; }
+        .sidebar-close {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+        .sidebar .profile-section {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .sidebar .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent);
+            margin: 0 auto 0.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: var(--text-secondary);
+            overflow: hidden;
+        }
+        .sidebar .profile-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 4px rgba(221,75,43,0.2);
+        }
+        .sidebar .profile-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .sidebar .profile-phone {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.2rem;
+        }
+        .sidebar .profile-location {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.2rem;
+        }
+        .sidebar .profile-gender {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.2rem;
+        }
+        .sidebar .nav-section { margin-bottom: 1.5rem; }
+        .sidebar .nav-section h4 {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            opacity: 0.7;
+        }
+        .sidebar .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.6rem 0.8rem;
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+        .sidebar .nav-item:hover {
+            background: var(--bg);
+            color: var(--primary);
+        }
+        .sidebar .nav-item.active {
+            background: var(--primary);
+            color: white;
+        }
+        .sidebar .nav-item i { width: 20px; text-align: center; }
+        .sidebar .nav-item .badge {
+            margin-left: auto;
+            background: var(--accent);
+            color: white;
+            font-size: 0.6rem;
+            padding: 0.1rem 0.5rem;
+            border-radius: 50px;
+        }
+        .sidebar .nav-item .badge-success { background: var(--success); }
+
+        /* ---------- MAIN CONTENT ---------- */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 1.5rem 2rem;
+            min-height: 100vh;
+        }
+
+        /* ---------- TOP BAR ---------- */
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .topbar .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+        .topbar .page-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+        .topbar .page-title i {
+            color: var(--accent);
+            margin-right: 8px;
+        }
+        .topbar .top-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .topbar .top-actions .notification-bell {
+            position: relative;
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.4rem;
+            border-radius: 50%;
+            transition: var(--transition);
+            background: var(--bg);
+            border: none;
+        }
+        .topbar .top-actions .notification-bell:hover {
+            background: var(--border);
+        }
+        .topbar .top-actions .notification-bell .notif-dot {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 10px;
+            height: 10px;
+            background: var(--danger);
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        /* ---------- BUTTONS ---------- */
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-weight: 600;
+            padding: 0.6rem 1.4rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .btn-primary:hover { background: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(221,75,43,0.3); }
+        .btn-secondary {
+            background: var(--bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            font-weight: 600;
+            padding: 0.6rem 1.4rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-secondary:hover { background: var(--border); transform: translateY(-2px); }
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+            border: none;
+            font-weight: 600;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-danger:hover { background: #c82333; transform: translateY(-2px); }
+        .btn-success {
+            background: var(--success);
+            color: white;
+            border: none;
+            font-weight: 600;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-success:hover { background: #218838; transform: translateY(-2px); }
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+            border: none;
+            font-weight: 600;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+        .btn-whatsapp:hover { background: #128C7E; transform: translateY(-2px); }
+        .btn-sms {
+            background: #34B7F1;
+            color: white;
+            border: none;
+            font-weight: 600;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+        .btn-sms:hover { background: #1A8EC4; transform: translateY(-2px); }
+
+        /* ---------- CONTAINER ---------- */
+        .container { max-width: 1280px; margin: 0 auto; }
+
+        /* ---------- OWNER MESSAGE ---------- */
+        .owner-message-section { margin: 0 0 2rem 0; }
+        .owner-message-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: var(--radius);
+            padding: 1.8rem 2rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+        .owner-message-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .owner-message-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.8;
+            margin-bottom: 0.8rem;
+            position: relative;
+            z-index: 1;
+        }
+        .owner-message-header i { font-size: 1.2rem; }
+        .owner-message-content {
+            font-size: 1.25rem;
+            font-weight: 500;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+        }
+        .owner-message-content .message-loading { opacity: 0.7; font-weight: 400; }
+        .owner-message-content .message-text { animation: fadeInMessage 0.5s ease; }
+        @keyframes fadeInMessage {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .owner-message-content .message-quote { font-size: 1.5rem; opacity: 0.3; margin-right: 10px; }
+        .btn-edit-message {
+            position: absolute;
+            top: 1.2rem;
+            right: 1.5rem;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+            z-index: 2;
+        }
+        .btn-edit-message:hover { background: rgba(255,255,255,0.25); transform: translateY(-1px); }
+
+        /* ---------- HERO ---------- */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: var(--radius);
+            padding: 3.5rem 3rem;
+            margin-bottom: 2.5rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 500px;
+            height: 500px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .hero-content { position: relative; z-index: 1; max-width: 600px; }
+        .hero h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 0.75rem; line-height: 1.2; }
+        .hero p { font-size: 1.1rem; opacity: 0.85; margin-bottom: 1.5rem; line-height: 1.7; }
+        .hero .btn-primary { background: white; color: var(--primary); }
+        .hero .btn-primary:hover { background: var(--accent); color: white; }
+
+        /* ---------- FEATURES ---------- */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1.75rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            transition: var(--transition);
+        }
+        .feature-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: transparent; }
+        .feature-card.items::after { background: var(--accent); }
+        .feature-card.properties::after { background: #2A7F6E; }
+        .feature-card.jobs::after { background: #2C6E9E; }
+        .feature-card .icon-wrap {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .feature-card.items .icon-wrap { background: #FDE8E3; color: var(--accent); }
+        .feature-card.properties .icon-wrap { background: #E3F0ED; color: #2A7F6E; }
+        .feature-card.jobs .icon-wrap { background: #E3EDF5; color: #2C6E9E; }
+        .feature-card h3 { font-size: 1.25rem; margin-bottom: 0.5rem; font-weight: 700; }
+        .feature-card p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; }
+
+        /* ---------- SECTION HEADER ---------- */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .section-header h2 { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.3px; display: flex; align-items: center; gap: 10px; }
+        .section-header .greeting { font-size: 0.9rem; color: var(--text-secondary); font-weight: 500; }
+
+        /* ---------- SEARCH BAR ---------- */
+        .search-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            background: var(--card-bg);
+            padding: 1rem 1.25rem;
+            border-radius: 60px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+            align-items: center;
+        }
+        .search-bar input,
+        .search-bar select {
+            flex: 1 1 160px;
+            padding: 0.6rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            background: var(--bg);
+            transition: var(--transition);
+            min-width: 120px;
+        }
+        .search-bar input:focus,
+        .search-bar select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(221,75,43,0.1);
+        }
+        .search-bar .btn-primary { flex: 0 1 auto; }
+
+        /* ---------- LISTINGS GRID ---------- */
+        .listings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .listing-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: var(--transition);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+        }
+        .listing-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: transparent; }
+        .listing-card .img-wrap {
+            width: 100%;
+            height: 200px;
+            background: var(--bg);
+            overflow: hidden;
+            position: relative;
+        }
+        .listing-card .img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        .listing-card:hover .img-wrap img { transform: scale(1.03); }
+        .listing-card .img-wrap .category-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .listing-info { padding: 1.25rem; }
+        .listing-title { font-weight: 700; font-size: 1.05rem; margin-bottom: 0.3rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .listing-price { color: var(--accent); font-weight: 800; font-size: 1.2rem; margin: 0.4rem 0; }
+        .listing-meta { display: flex; align-items: center; gap: 12px; color: var(--text-secondary); font-size: 0.8rem; flex-wrap: wrap; }
+        .listing-meta i { width: 14px; }
+        .listing-meta .badge { background: var(--bg); padding: 0.15rem 0.6rem; border-radius: 50px; font-size: 0.7rem; font-weight: 600; color: var(--text-secondary); }
+        .contact-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .listing-card .poster-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid var(--border);
+        }
+        .listing-card .poster-info img {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: var(--bg);
+        }
+        .listing-card .poster-info .poster-name {
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: var(--text-primary);
+        }
+
+        /* ---------- DASHBOARD STATS ---------- */
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1.75rem 1.5rem;
+            text-align: center;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+        .stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        .stat-card .stat-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+        .stat-card h3 { font-size: 2rem; font-weight: 800; color: var(--primary); }
+        .stat-card p { color: var(--text-secondary); font-size: 0.85rem; }
+
+        /* ---------- MODAL ---------- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            animation: fadeIn 0.25s ease;
+        }
+        .modal-overlay.active { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .modal-content {
+            background: var(--card-bg);
+            max-width: 560px;
+            width: 100%;
+            padding: 2rem;
+            border-radius: var(--radius);
+            box-shadow: 0 40px 60px rgba(0,0,0,0.2);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-content h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; }
+        .modal-content .close-modal {
+            float: right;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: var(--transition);
+        }
+        .modal-content .close-modal:hover { color: var(--text-primary); transform: rotate(90deg); }
+
+        /* ---------- FORMS ---------- */
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem; color: var(--text-primary); }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            background: var(--card-bg);
+            color: var(--text-primary);
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(221,75,43,0.1);
+        }
+        .form-group textarea { resize: vertical; min-height: 80px; }
+        .form-actions { display: flex; gap: 0.75rem; margin-top: 0.5rem; flex-wrap: wrap; }
+        .form-actions button { flex: 1; min-width: 120px; justify-content: center; }
+
+        /* ---------- CROPPER ---------- */
+        .cropper-container { max-height: 400px; margin-bottom: 1rem; }
+        .cropper-container img { max-width: 100%; display: block; }
+        .image-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin: 0.5rem 0 1rem;
+        }
+        .image-actions button { flex: 1; min-width: 80px; justify-content: center; }
+
+        /* ---------- EDIT MESSAGE ---------- */
+        .edit-message-form textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 0.8rem 1rem;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+            resize: vertical;
+        }
+        .edit-message-form textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(221,75,43,0.1);
+        }
+        .edit-message-form .char-count { text-align: right; font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.3rem; }
+
+        /* ---------- EMPTY STATE ---------- */
+        .empty-state { text-align: center; padding: 3rem 2rem; background: var(--card-bg); border-radius: var(--radius); border: 1px dashed var(--border); }
+        .empty-state .empty-icon { font-size: 3rem; color: var(--border); margin-bottom: 1rem; }
+        .empty-state h3 { font-weight: 600; margin-bottom: 0.5rem; }
+        .empty-state p { color: var(--text-secondary); margin-bottom: 1.5rem; }
+
+        /* ---------- LOADING ---------- */
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+        }
+        .loading-spinner i { font-size: 2rem; color: var(--primary-light); }
+
+        /* ---------- TOAST ---------- */
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .toast {
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-sm);
+            color: white;
+            font-weight: 500;
+            box-shadow: var(--shadow-lg);
+            animation: slideIn 0.3s ease;
+            min-width: 280px;
+        }
+        .toast-success { background: var(--success); }
+        .toast-error { background: var(--danger); }
+        .toast-info { background: var(--primary); }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* ---------- FOOTER ---------- */
+        footer { text-align: center; padding: 2rem 0; color: var(--text-secondary); font-size: 0.8rem; border-top: 1px solid var(--border); margin-top: 2rem; }
+
+        /* ===== CHAT ===== */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            height: 70vh;
+            min-height: 400px;
+        }
+        .chat-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg);
+        }
+        .chat-header .chat-user {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .chat-header .chat-user img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: var(--bg);
+        }
+        .chat-header .chat-user .name {
+            font-weight: 600;
+        }
+        .chat-header .chat-user .status {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        .chat-messages {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            background: var(--bg);
+        }
+        .chat-message {
+            display: flex;
+            flex-direction: column;
+            max-width: 70%;
+        }
+        .chat-message.sent {
+            align-self: flex-end;
+            align-items: flex-end;
+        }
+        .chat-message.received {
+            align-self: flex-start;
+            align-items: flex-start;
+        }
+        .chat-message .bubble {
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            background: var(--card-bg);
+            box-shadow: var(--shadow-sm);
+            word-break: break-word;
+        }
+        .chat-message.sent .bubble {
+            background: var(--primary);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        .chat-message.received .bubble {
+            background: var(--card-bg);
+            border-bottom-left-radius: 4px;
+        }
+        .chat-message .time {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 0.2rem;
+            padding: 0 0.2rem;
+        }
+        .chat-message.sent .time { color: rgba(255,255,255,0.7); }
+        .chat-input {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+            background: var(--card-bg);
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 0.6rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            background: var(--bg);
+        }
+        .chat-input input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        .chat-input button {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 50px;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .chat-input button:hover { background: var(--accent); }
+        .chat-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 1rem;
+            border-right: 1px solid var(--border);
+            background: var(--card-bg);
+            overflow-y: auto;
+            max-height: 70vh;
+            min-width: 240px;
+        }
+        .chat-list .chat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+        .chat-list .chat-item:hover {
+            background: var(--bg);
+            border-color: var(--border);
+        }
+        .chat-list .chat-item.active {
+            background: var(--bg);
+            border-color: var(--accent);
+        }
+        .chat-list .chat-item img {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: var(--bg);
+        }
+        .chat-list .chat-item .info {
+            flex: 1;
+        }
+        .chat-list .chat-item .info .name {
+            font-weight: 600;
+        }
+        .chat-list .chat-item .info .last-msg {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .chat-list .chat-item .time {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+        .chat-panel {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+        }
+        .chat-two-col {
+            display: flex;
+            height: 70vh;
+            min-height: 400px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+        .chat-two-col .chat-list-col {
+            width: 280px;
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            background: var(--bg);
+        }
+        .chat-two-col .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-two-col .chat-main .chat-messages { flex: 1; }
+        .chat-two-col .chat-main .chat-input { border-top: 1px solid var(--border); }
+
+        /* ---------- NEW CHAT FEATURES ---------- */
+        /* Message with avatar */
+        .chat-message .sender-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: var(--bg);
+            flex-shrink: 0;
+        }
+        .chat-message.sent .sender-avatar { order: 1; margin-left: 8px; }
+        .chat-message.received .sender-avatar { margin-right: 8px; }
+        .chat-message .message-row {
+            display: flex;
+            align-items: flex-end;
+            gap: 6px;
+        }
+        .chat-message .message-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+        .chat-message.sent .message-meta { color: rgba(255,255,255,0.7); }
+        .chat-message .seen-indicator {
+            font-size: 0.65rem;
+            color: var(--success);
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+        }
+        .chat-message.sent .seen-indicator { color: #8bc34a; }
+        /* Typing indicator */
+        .typing-indicator {
+            display: none;
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            background: var(--bg);
+            border-radius: var(--radius-sm);
+            align-self: flex-start;
+            margin-bottom: 0.5rem;
+        }
+        .typing-indicator.active { display: block; }
+        .typing-dots::after {
+            content: '...';
+            animation: dots 1.4s infinite;
+        }
+        @keyframes dots {
+            0% { content: ''; }
+            33% { content: '.'; }
+            66% { content: '..'; }
+            100% { content: '...'; }
+        }
+        /* Video call overlay */
+        .video-call-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 5000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .video-call-overlay.active { display: flex; }
+        .video-container {
+            position: relative;
+            width: 90%;
+            max-width: 800px;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .video-container .local-video {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 120px;
+            height: 90px;
+            border-radius: 12px;
+            border: 2px solid white;
+            object-fit: cover;
+            background: #222;
+        }
+        .video-call-controls {
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            justify-content: center;
+        }
+        .video-call-controls button {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-end-call { background: var(--danger); color: white; }
+        .btn-end-call:hover { background: #c82333; transform: scale(1.05); }
+        .btn-mute-toggle { background: var(--bg); color: var(--text-primary); }
+        .btn-mute-toggle:hover { background: var(--border); }
+
+        /* Incoming call modal */
+        .incoming-call {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            z-index: 4000;
+            justify-content: center;
+            align-items: center;
+        }
+        .incoming-call.active { display: flex; }
+        .incoming-call-box {
+            background: var(--card-bg);
+            padding: 2rem 3rem;
+            border-radius: var(--radius);
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+        }
+        .incoming-call-box h3 { margin-bottom: 1rem; }
+        .incoming-call-box .caller-name { font-size: 1.5rem; font-weight: 700; }
+        .incoming-call-box .call-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+        .incoming-call-box .call-actions button {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-accept-call { background: var(--success); color: white; }
+        .btn-accept-call:hover { background: #218838; }
+        .btn-decline-call { background: var(--danger); color: white; }
+        .btn-decline-call:hover { background: #c82333; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .chat-two-col .chat-list-col {
+                display: none;
+                width: 100%;
+                border-right: none;
+            }
+            .chat-two-col .chat-list-col.active {
+                display: block;
+            }
+            .chat-two-col .chat-main {
+                display: block;
+            }
+            .chat-two-col .chat-main.hidden {
+                display: none;
+            }
+            .chat-message { max-width: 85%; }
+            .sidebar {
+                transform: translateX(-100%);
+                width: 300px;
+            }
+            .sidebar.open { transform: translateX(0); }
+            .sidebar-close { display: block; }
+            .main-content { margin-left: 0; padding: 1rem; }
+            .topbar .hamburger { display: block; }
+            .topbar .page-title { font-size: 1.2rem; }
+            .hero { padding: 2rem 1.5rem; border-radius: var(--radius-sm); }
+            .hero h1 { font-size: 1.6rem; }
+            .hero p { font-size: 0.95rem; }
+            .features { grid-template-columns: 1fr; }
+            .section-header h2 { font-size: 1.25rem; }
+            .listings-grid { grid-template-columns: 1fr; }
+            .modal-content { padding: 1.5rem; }
+            .dashboard-stats { grid-template-columns: 1fr 1fr; }
+            .search-bar { border-radius: var(--radius-sm); padding: 1rem; }
+            .search-bar input,
+            .search-bar select { flex: 1 1 100%; }
+            .owner-message-card { padding: 1.5rem; border-radius: var(--radius-sm); }
+            .owner-message-content { font-size: 1.05rem; }
+            .btn-edit-message {
+                position: static;
+                margin-top: 1rem;
+                width: 100%;
+                justify-content: center;
+            }
+            .toast-container { bottom: 1rem; right: 1rem; left: 1rem; }
+            .toast { min-width: auto; }
+            .chat-two-col { flex-direction: column; }
+            .chat-two-col .chat-list-col { width: 100%; max-height: 200px; border-right: none; }
+            .video-container .local-video { width: 80px; height: 60px; }
+        }
+        @media (max-width: 480px) {
+            .hero { padding: 1.5rem; }
+            .hero h1 { font-size: 1.3rem; }
+            .dashboard-stats { grid-template-columns: 1fr; }
+            .form-actions { flex-direction: column; }
+            .form-actions button { flex: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <a href="#" onclick="showHome()" class="logo">
+            <i class="fas fa-store-alt"></i> Njala<span>Market</span>
+        </a>
+        <button class="sidebar-close" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
+    </div>
+
+    <div class="profile-section" id="sidebarProfile">
+        <div class="profile-avatar" id="sidebarAvatar" onclick="openProfileSettings()">
+            <i class="fas fa-user"></i>
+        </div>
+        <div class="profile-name" id="sidebarName">Guest</div>
+        <div class="profile-phone" id="sidebarPhone"></div>
+        <div class="profile-location" id="sidebarLocation"></div>
+        <div class="profile-gender" id="sidebarGender"></div>
+    </div>
+
+    <div class="nav-section">
+        <h4>Main</h4>
+        <button class="nav-item active" onclick="showHome(); closeSidebar();" id="navHome">
+            <i class="fas fa-home"></i> Home
+        </button>
+        <button class="nav-item" onclick="showSection('items'); closeSidebar();" id="navItems">
+            <i class="fas fa-tag"></i> Items
+        </button>
+        <button class="nav-item" onclick="showSection('properties'); closeSidebar();" id="navProperties">
+            <i class="fas fa-building"></i> Property
+        </button>
+        <button class="nav-item" onclick="showSection('jobs'); closeSidebar();" id="navJobs">
+            <i class="fas fa-briefcase"></i> Jobs
+        </button>
+    </div>
+
+    <div class="nav-section">
+        <h4>Account</h4>
+        <button class="nav-item" onclick="openProfileSettings(); closeSidebar();">
+            <i class="fas fa-user-cog"></i> Manage Profile
+        </button>
+        <button class="nav-item" onclick="showAllUsers(); closeSidebar();">
+            <i class="fas fa-users"></i> All Users <span class="badge" id="userCountBadge">0</span>
+        </button>
+        <button class="nav-item" onclick="showFriends(); closeSidebar();">
+            <i class="fas fa-user-friends"></i> Friends <span class="badge badge-success" id="friendCountBadge">0</span>
+        </button>
+        <button class="nav-item" onclick="showChat(); closeSidebar();">
+            <i class="fas fa-comment-dots"></i> Chat <span class="badge" id="chatBadge">0</span>
+        </button>
+        <button class="nav-item" onclick="showNotifications(); closeSidebar();">
+            <i class="fas fa-bell"></i> Notifications <span class="badge" id="notifBadge">0</span>
+        </button>
+        <button class="nav-item" onclick="showDashboard(); closeSidebar();" id="dashboardLink">
+            <i class="fas fa-chart-simple"></i> My Listings
+        </button>
+    </div>
+
+    <div class="nav-section">
+        <h4>Support</h4>
+        <button class="nav-item" onclick="openContactOwner(); closeSidebar();">
+            <i class="fas fa-envelope"></i> Contact Owner
+        </button>
+        <button class="nav-item" onclick="handleLogout(); closeSidebar();" id="logoutLink">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+        <button class="nav-item" onclick="showAuth(); closeSidebar();" id="authLink">
+            <i class="fas fa-user"></i> Sign In
+        </button>
+    </div>
+</aside>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="main-content" id="mainContent">
+    <div class="topbar">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+            <span class="page-title" id="pageTitle"><i class="fas fa-store-alt"></i> NjalaMarket</span>
+        </div>
+        <div class="top-actions">
+            <button class="notification-bell" onclick="showNotifications()" title="Notifications">
+                <i class="fas fa-bell"></i>
+                <span class="notif-dot" id="notifDot"></span>
+            </button>
+            <button class="btn-primary" onclick="currentUser ? showPostForm('items') : showAuth()">
+                <i class="fas fa-plus"></i> Post
+            </button>
+        </div>
+    </div>
+
+    <div class="container" id="app"></div>
+
+    <footer><p>© 2025 NjalaMarket — Trusted marketplace in Malawi. Buy, rent &amp; grow.</p></footer>
+</div>
+
+<!-- ===== MODAL ===== -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal-content" id="modalContent"></div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ===== VIDEO CALL OVERLAY ===== -->
+<div class="video-call-overlay" id="videoCallOverlay">
+    <div class="video-container">
+        <video id="remoteVideo" autoplay playsinline></video>
+        <video id="localVideo" class="local-video" autoplay playsinline muted></video>
+    </div>
+    <div class="video-call-controls">
+        <button class="btn-mute-toggle" onclick="toggleMute()"><i class="fas fa-microphone"></i> Mute</button>
+        <button class="btn-end-call" onclick="endCall()"><i class="fas fa-phone-slash"></i> End Call</button>
+    </div>
+</div>
+
+<!-- ===== INCOMING CALL MODAL ===== -->
+<div class="incoming-call" id="incomingCall">
+    <div class="incoming-call-box">
+        <h3>📞 Incoming Call</h3>
+        <div class="caller-name" id="callerName">Unknown</div>
+        <div class="call-actions">
+            <button class="btn-accept-call" onclick="acceptCall()"><i class="fas fa-phone"></i> Accept</button>
+            <button class="btn-decline-call" onclick="declineCall()"><i class="fas fa-times"></i> Decline</button>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- JAVASCRIPT -->
+<!-- ============================================================ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+<script>
+    // ============================================================
+    // CONFIGURATION
+    // ============================================================
+    const API_URL = 'https://list-server-v6.onrender.com';
+
+    // ============================================================
+    // STATE
+    // ============================================================
+    let currentUser = null;
+    let token = localStorage.getItem('token');
+    let cropper = null;
+    let pendingFormData = null;
+    let pendingSection = 'items';
+    let editImageData = null;
+    let currentView = 'home';
+    let resetPhone = '';
+    let socket = null;
+
+    // Chat state
+    let currentChatUser = null; // { _id, name, profilePicture }
+    let chatMessages = [];
+    let allUsers = [];
+
+    // Typing state
+    let typingTimeout = null;
+    let isTyping = false;
+
+    // Video call state
+    let localStream = null;
+    let remoteStream = null;
+    let peerConnection = null;
+    let callInProgress = false;
+    let incomingCallData = null; // { from: userId, name: string }
+
+    // ============================================================
+    // TOAST
+    // ============================================================
+    function showToast(message, type = 'info') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.textContent = message;
+        container.appendChild(toast);
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(100%)';
+            setTimeout(() => toast.remove(), 300);
+        }, 4000);
+    }
+
+    // ============================================================
+    // SIDEBAR
+    // ============================================================
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('open');
+    }
+    function closeSidebar() {
+        document.getElementById('sidebar').classList.remove('open');
+    }
+
+    // ============================================================
+    // API CLIENT
+    // ============================================================
+    async function apiRequest(endpoint, method = 'GET', data = null, isFormData = false) {
+        const headers = {};
+        const token = localStorage.getItem('token');
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        const options = { method, headers };
+        if (data) {
+            if (isFormData) {
+                options.body = data;
+            } else {
+                headers['Content-Type'] = 'application/json';
+                options.body = JSON.stringify(data);
+            }
+        }
+        try {
+            const response = await fetch(`${API_URL}${endpoint}`, options);
+            const result = await response.json();
+            if (!response.ok) {
+                if (response.status === 401) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    currentUser = null;
+                    updateSidebarUI();
+                    showToast('Session expired. Please login again.', 'error');
+                    showAuth();
+                    throw new Error('Unauthorized');
+                }
+                throw new Error(result.error || result.message || 'Request failed');
+            }
+            return result;
+        } catch (error) {
+            if (error.message === 'Failed to fetch') {
+                showToast('⚠️ Cannot connect to server.', 'error');
+            } else if (error.message !== 'Unauthorized') {
+                showToast('❌ ' + error.message, 'error');
+            }
+            throw error;
+        }
+    }
+
+    // ============================================================
+    // SOCKET.IO SETUP
+    // ============================================================
+    function initSocket() {
+        if (socket) socket.disconnect();
+        const token = localStorage.getItem('token');
+        if (!token) return;
+
+        socket = io(API_URL, {
+            auth: { token }
+        });
+
+        socket.on('connect', () => {
+            console.log('🔌 Socket connected');
+        });
+
+        socket.on('connect_error', (err) => {
+            console.error('Socket error:', err.message);
+            showToast('Real-time connection error', 'error');
+        });
+
+        socket.on('new_message', (chat) => {
+            if (currentChatUser && chat.senderId === currentChatUser._id) {
+                chatMessages.push(chat);
+                renderChatMessages();
+                // Mark as read
+                socket.emit('mark_read', { otherUserId: currentChatUser._id });
+            } else {
+                updateUnreadCounts();
+            }
+            if (currentView !== 'chat' || !currentChatUser || chat.senderId !== currentChatUser._id) {
+                showToast(`💬 New message from ${chat.senderName || 'Someone'}`, 'info');
+            }
+        });
+
+        socket.on('unread_update', ({ count }) => {
+            updateUnreadCounts();
+        });
+
+        socket.on('notification', (notification) => {
+            updateUnreadCounts();
+            showToast(`🔔 ${notification.title}: ${notification.body}`, 'info');
+        });
+
+        // ----- TYPING EVENTS -----
+        socket.on('typing', ({ senderId }) => {
+            if (currentChatUser && senderId === currentChatUser._id) {
+                showTypingIndicator(true);
+            }
+        });
+        socket.on('stop_typing', ({ senderId }) => {
+            if (currentChatUser && senderId === currentChatUser._id) {
+                showTypingIndicator(false);
+            }
+        });
+
+        // ----- READ RECEIPT EVENTS -----
+        socket.on('message_read', ({ messageId }) => {
+            // Update the specific message as seen
+            const msg = chatMessages.find(m => m._id === messageId);
+            if (msg) {
+                msg.seen = true;
+                renderChatMessages();
+            }
+        });
+
+        // ----- DELETE MESSAGE EVENT -----
+        socket.on('message_deleted', ({ messageId }) => {
+            chatMessages = chatMessages.filter(m => m._id !== messageId);
+            renderChatMessages();
+            showToast('💬 Message deleted', 'info');
+        });
+
+        // ----- VIDEO CALL SIGNALING -----
+        socket.on('incoming_call', ({ from, name }) => {
+            incomingCallData = { from, name };
+            document.getElementById('callerName').textContent = name;
+            document.getElementById('incomingCall').classList.add('active');
+        });
+
+        socket.on('call_accepted', ({ from }) => {
+            if (callInProgress) {
+                // The other side accepted, now we can establish the peer connection
+                initiateCall(from);
+            }
+        });
+
+        socket.on('call_declined', () => {
+            if (callInProgress) {
+                endCall();
+                showToast('📵 Call declined', 'error');
+            }
+        });
+
+        socket.on('webrtc_offer', async ({ from, sdp }) => {
+            if (!callInProgress && !incomingCallData) {
+                // Might be a call we missed; ignore
+                return;
+            }
+            await handleWebRTCAnswer(from, sdp);
+        });
+
+        socket.on('webrtc_answer', async ({ from, sdp }) => {
+            if (peerConnection && callInProgress) {
+                await peerConnection.setRemoteDescription(new RTCSessionDescription(sdp));
+            }
+        });
+
+        socket.on('webrtc_ice', async ({ from, candidate }) => {
+            if (peerConnection && callInProgress) {
+                try {
+                    await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+                } catch (e) {
+                    console.error('Error adding ICE candidate:', e);
+                }
+            }
+        });
+
+        socket.on('call_ended', () => {
+            endCall();
+            showToast('📞 Call ended', 'info');
+        });
+
+        socket.on('disconnect', () => {
+            console.log('🔌 Socket disconnected');
+        });
+    }
+
+    // ============================================================
+    // UNREAD COUNTS
+    // ============================================================
+    async function updateUnreadCounts() {
+        if (!currentUser) return;
+        try {
+            const chatResult = await apiRequest('/api/chat/unread');
+            const chatCount = chatResult.count || 0;
+            document.getElementById('chatBadge').textContent = chatCount;
+
+            const notifResult = await apiRequest('/api/notifications/unread-count');
+            const notifCount = notifResult.count || 0;
+            document.getElementById('notifBadge').textContent = notifCount;
+            document.getElementById('notifDot').style.display = notifCount > 0 ? 'block' : 'none';
+        } catch (e) {
+            console.error('Error updating unread counts:', e);
+        }
+    }
+
+    // ============================================================
+    // AUTH
+    // ============================================================
+    async function login(phone, password) {
+        try {
+            const result = await apiRequest('/api/auth/login', 'POST', { phone, password });
+            if (result.success) {
+                localStorage.setItem('token', result.token);
+                localStorage.setItem('user', JSON.stringify(result.user));
+                currentUser = result.user;
+                updateSidebarUI();
+                initSocket();
+                showHome();
+                showToast('✅ Welcome back, ' + result.user.name + '!', 'success');
+                return true;
+            }
+            return false;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    async function register(userData) {
+        try {
+            const email = userData.phone + '@njalamarket.com';
+            const payload = { ...userData, email };
+            const result = await apiRequest('/api/auth/register', 'POST', payload);
+            if (result.success) {
+                localStorage.setItem('token', result.token);
+                localStorage.setItem('user', JSON.stringify(result.user));
+                currentUser = result.user;
+                updateSidebarUI();
+                initSocket();
+                showHome();
+                showToast('🎉 Account created! Welcome to NjalaMarket.', 'success');
+                return true;
+            }
+            return false;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    function logout() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        currentUser = null;
+        if (socket) { socket.disconnect(); socket = null; }
+        updateSidebarUI();
+        showHome();
+        showToast('👋 Logged out successfully', 'info');
+    }
+
+    function getCurrentUser() {
+        const userStr = localStorage.getItem('user');
+        if (userStr) {
+            currentUser = JSON.parse(userStr);
+            return currentUser;
+        }
+        return null;
+    }
+
+    function updateSidebarUI() {
+        const isLoggedIn = !!currentUser;
+        const avatar = document.getElementById('sidebarAvatar');
+        const name = document.getElementById('sidebarName');
+        const phone = document.getElementById('sidebarPhone');
+        const location = document.getElementById('sidebarLocation');
+        const gender = document.getElementById('sidebarGender');
+        const authLink = document.getElementById('authLink');
+        const logoutLink = document.getElementById('logoutLink');
+        const dashboardLink = document.getElementById('dashboardLink');
+
+        if (isLoggedIn) {
+            name.textContent = currentUser.name || 'User';
+            phone.textContent = currentUser.phone ? `📱 ${currentUser.phone}` : '';
+            location.textContent = currentUser.district ? `📍 ${currentUser.district}` : '';
+            gender.textContent = currentUser.gender ? `🚻 ${currentUser.gender}` : '';
+            if (currentUser.profilePicture) {
+                avatar.innerHTML = `<img src="${currentUser.profilePicture}" style="width:100%;height:100%;object-fit:cover;" />`;
+            } else {
+                avatar.innerHTML = `<i class="fas fa-user"></i>`;
+            }
+            authLink.style.display = 'none';
+            logoutLink.style.display = 'flex';
+            dashboardLink.style.display = 'flex';
+        } else {
+            name.textContent = 'Guest';
+            phone.textContent = 'Not signed in';
+            location.textContent = '';
+            gender.textContent = '';
+            avatar.innerHTML = `<i class="fas fa-user"></i>`;
+            authLink.style.display = 'flex';
+            logoutLink.style.display = 'none';
+            dashboardLink.style.display = 'none';
+        }
+        updateUnreadCounts();
+    }
+
+    function setActiveNav(id) {
+        document.querySelectorAll('.sidebar .nav-item').forEach(a => a.classList.remove('active'));
+        const el = document.getElementById(id);
+        if (el) el.classList.add('active');
+    }
+
+    // ============================================================
+    // MODAL
+    // ============================================================
+    function openModal(html) {
+        const overlay = document.getElementById('modalOverlay');
+        const content = document.getElementById('modalContent');
+        content.innerHTML = html;
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        if (cropper) { cropper.destroy(); cropper = null; }
+        document.getElementById('modalOverlay').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+
+    // ============================================================
+    // CROPPER
+    // ============================================================
+    function initCropper(imageUrl) {
+        setTimeout(() => {
+            const img = document.getElementById('cropImage');
+            if (!img) return;
+            if (cropper) { cropper.destroy(); cropper = null; }
+            cropper = new Cropper(img, {
+                aspectRatio: 1,
+                viewMode: 1,
+                autoCropArea: 0.8,
+                responsive: true,
+                restore: false,
+                guides: true,
+                center: true,
+                highlight: true,
+                cropBoxMovable: true,
+                cropBoxResizable: true,
+                toggleDragModeOnDblclick: true,
+            });
+        }, 100);
+    }
+
+    function getCroppedImage() {
+        if (!cropper) return null;
+        return cropper.getCroppedCanvas({
+            width: 600,
+            height: 600,
+            imageSmoothingEnabled: true,
+            imageSmoothingQuality: 'high'
+        }).toDataURL('image/jpeg', 0.9);
+    }
+
+    function getSkippedImage() {
+        const img = document.getElementById('cropImage');
+        if (!img) return null;
+        const canvas = document.createElement('canvas');
+        canvas.width = 600;
+        canvas.height = 600;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, 600, 600);
+        return canvas.toDataURL('image/jpeg', 0.8);
+    }
+
+    // ============================================================
+    // OWNER MESSAGE (unchanged)
+    // ============================================================
+    let ownerMessage = 'Welcome to NjalaMarket! Your trusted marketplace.';
+
+    async function fetchOwnerMessage() {
+        const contentDiv = document.getElementById('ownerMessageContent');
+        if (!contentDiv) return;
+        try {
+            const result = await apiRequest('/api/settings/owner_message');
+            ownerMessage = result.value || 'Welcome to NjalaMarket! Your trusted marketplace.';
+            contentDiv.innerHTML = `
+                <span class="message-quote">"</span>
+                <span class="message-text">${ownerMessage}</span>
+                <span class="message-quote">"</span>
+            `;
+        } catch (error) {
+            contentDiv.innerHTML = `
+                <span class="message-text">Welcome to NjalaMarket! Your trusted marketplace.</span>
+            `;
+        }
+    }
+
+    async function updateOwnerMessage(message) {
+        try {
+            await apiRequest('/api/settings', 'POST', { key: 'owner_message', value: message });
+            ownerMessage = message;
+            renderOwnerMessage();
+            showToast('✅ Message updated successfully!', 'success');
+            return true;
+        } catch (error) {
+            showToast('❌ Error updating message: ' + error.message, 'error');
+            return false;
+        }
+    }
+
+    function renderOwnerMessage() {
+        const contentDiv = document.getElementById('ownerMessageContent');
+        if (!contentDiv) return;
+        contentDiv.innerHTML = `
+            <span class="message-quote">"</span>
+            <span class="message-text">${ownerMessage}</span>
+            <span class="message-quote">"</span>
+        `;
+    }
+
+    function openEditMessageModal() {
+        if (!currentUser || currentUser.role !== 'admin') {
+            showToast('Only the owner can edit this message.', 'error');
+            return;
+        }
+        openModal(`
+            <h2><i class="fas fa-pen" style="color: var(--accent);"></i> Edit Owner Message</h2>
+            <form id="editMessageForm" class="edit-message-form">
+                <div class="form-group">
+                    <label>Message to display on the website</label>
+                    <textarea id="messageInput" placeholder="Enter your message here..." maxlength="500">${ownerMessage}</textarea>
+                    <div class="char-count"><span id="charCount">${ownerMessage.length}</span>/500 characters</div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Update Message</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+                </div>
+            </form>
+        `);
+        const textarea = document.getElementById('messageInput');
+        const charCount = document.getElementById('charCount');
+        if (textarea) {
+            textarea.addEventListener('input', function() {
+                charCount.textContent = this.value.length;
+            });
+        }
+        document.getElementById('editMessageForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const message = document.getElementById('messageInput').value.trim();
+            if (!message) { showToast('Please enter a message', 'error'); return; }
+            await updateOwnerMessage(message);
+            closeModal();
+        });
+    }
+
+    // ============================================================
+    // RENDER LISTING CARD (unchanged)
+    // ============================================================
+    function renderListingCard(item, showActions = false) {
+        const isOwner = currentUser && item.userId === currentUser._id;
+        const phone = item.phone || '0999123456';
+        const type = item.type || 'product';
+        const posterName = item.posterName || 'Anonymous';
+        const posterImage = item.posterImage || '';
+        const actions = showActions && isOwner ? `
+            <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap;">
+                <button class="btn-success" onclick="editListing('${type}', '${item._id}')"><i class="fas fa-edit"></i> Edit</button>
+                <button class="btn-danger" onclick="deleteListing('${type}', '${item._id}')"><i class="fas fa-trash"></i> Delete</button>
+            </div>
+        ` : '';
+        const contactHtml = `
+            <div class="contact-actions">
+                <a href="https://wa.me/265${phone.replace(/^0/, '')}?text=Hi%20I%20am%20interested%20in%20${encodeURIComponent(item.title)}" target="_blank" class="btn-whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                <a href="sms:${phone}?body=Hi%20I%20am%20interested%20in%20${encodeURIComponent(item.title)}" class="btn-sms"><i class="fas fa-sms"></i> SMS</a>
+            </div>
+        `;
+        let imageHtml = `<img src="${item.image || 'https://placehold.co/600x400/1e2f3d/white?text=Product'}" alt="${item.title}" loading="lazy" />`;
+        let badgeText = item.category || item.listingType || item.employmentType || 'Item';
+        let priceHtml = `<div class="listing-price">MK ${item.price?.toLocaleString() || 'Contact'}</div>`;
+        let metaHtml = '';
+        if (type === 'product') {
+            metaHtml = `<span><i class="fas fa-map-marker-alt"></i> ${item.location}</span><span class="badge"><i class="far fa-eye"></i> ${item.views || 0}</span><span class="badge">${item.condition || 'Good'}</span>`;
+        } else if (type === 'property') {
+            imageHtml = `<img src="${item.image || 'https://placehold.co/600x400/2b4f5c/white?text=Property'}" alt="${item.title}" loading="lazy" />`;
+            badgeText = item.listingType || 'Property';
+            metaHtml = `<span><i class="fas fa-map-marker-alt"></i> ${item.location}</span><span><i class="fas fa-bed"></i> ${item.bedrooms || 0} beds</span><span class="badge"><i class="far fa-eye"></i> ${item.views || 0}</span>`;
+        } else if (type === 'job') {
+            imageHtml = `<div style="background: var(--primary); display: flex; align-items: center; justify-content: center; color: white; height: 100%;"><i class="fas fa-building" style="font-size: 2.5rem; opacity: 0.6;"></i></div>`;
+            badgeText = item.employmentType || 'Job';
+            priceHtml = `<div class="listing-price" style="color: var(--primary); font-size: 1rem;">💰 ${item.salary || 'Negotiable'}</div>`;
+            metaHtml = `<span><i class="fas fa-map-marker-alt"></i> ${item.location}</span><span class="badge">${item.employmentType || 'Full-time'}</span>`;
+        }
+        const detailClick = `onclick="showDetail('${type}', '${item._id}')"`;
+        return `
+            <div class="listing-card" ${detailClick}>
+                <div class="img-wrap">${imageHtml}<span class="category-badge">${badgeText}</span></div>
+                <div class="listing-info">
+                    <div class="listing-title">${item.title}</div>
+                    ${item.company ? `<div style="color: var(--text-secondary); font-weight: 600; font-size: 0.95rem;">${item.company}</div>` : ''}
+                    ${priceHtml}
+                    <div class="listing-meta">${metaHtml}</div>
+                    <div class="poster-info">
+                        <img src="${posterImage || 'https://placehold.co/40x40/1e2f3d/white?text=U'}" alt="${posterName}" />
+                        <span class="poster-name">${posterName}</span>
+                    </div>
+                    ${contactHtml}
+                    ${actions}
+                </div>
+            </div>
+        `;
+    }
+
+    // ============================================================
+    // DETAIL VIEW (unchanged)
+    // ============================================================
+    async function showDetail(type, id) {
+        try {
+            const endpoint = type === 'product' ? 'products' : type === 'property' ? 'properties' : 'jobs';
+            const result = await apiRequest(`/api/${endpoint}/${id}`);
+            const item = result[type] || result.product || result.property || result.job;
+            if (!item) return;
+
+            const phone = item.phone || '0999123456';
+            let detailsHtml = '';
+            let titleIcon = type === 'product' ? 'fa-tag' : type === 'property' ? 'fa-home' : 'fa-briefcase';
+            let titleColor = type === 'product' ? 'var(--accent)' : type === 'property' ? '#2A7F6E' : '#2C6E9E';
+
+            if (type === 'product') {
+                detailsHtml = `
+                    <div style="text-align:center; margin-bottom:1rem;">
+                        <img src="${item.image}" alt="${item.title}" style="width:100%; max-height:300px; object-fit:cover; border-radius:12px;" />
+                    </div>
+                    <div class="form-group"><label>Title</label><div style="font-weight:600; font-size:1.2rem;">${item.title}</div></div>
+                    <div class="form-group"><label>Price</label><div style="font-weight:700; color:var(--accent); font-size:1.4rem;">MK ${item.price?.toLocaleString()}</div></div>
+                    <div class="form-group"><label>Category</label><div>${item.category || 'N/A'}</div></div>
+                    <div class="form-group"><label>Condition</label><div>${item.condition || 'N/A'}</div></div>
+                    <div class="form-group"><label>Location</label><div><i class="fas fa-map-marker-alt"></i> ${item.location}</div></div>
+                    <div class="form-group"><label>Views</label><div><i class="far fa-eye"></i> ${item.views || 0}</div></div>
+                    <div class="form-group"><label>Posted by</label><div><img src="${item.posterImage || 'https://placehold.co/40x40/1e2f3d/white?text=U'}" style="width:32px;height:32px;border-radius:50%;vertical-align:middle;margin-right:8px;" /> ${item.posterName || 'Anonymous'}</div></div>
+                `;
+            } else if (type === 'property') {
+                detailsHtml = `
+                    <div style="text-align:center; margin-bottom:1rem;">
+                        <img src="${item.image}" alt="${item.title}" style="width:100%; max-height:300px; object-fit:cover; border-radius:12px;" />
+                    </div>
+                    <div class="form-group"><label>Title</label><div style="font-weight:600; font-size:1.2rem;">${item.title}</div></div>
+                    <div class="form-group"><label>Price</label><div style="font-weight:700; color:var(--accent); font-size:1.4rem;">MK ${item.price?.toLocaleString()}</div></div>
+                    <div class="form-group"><label>Type</label><div>${item.type || 'N/A'}</div></div>
+                    <div class="form-group"><label>Listing Type</label><div>${item.listingType || 'N/A'}</div></div>
+                    <div class="form-group"><label>Bedrooms</label><div>${item.bedrooms || 0}</div></div>
+                    <div class="form-group"><label>Location</label><div><i class="fas fa-map-marker-alt"></i> ${item.location}</div></div>
+                    <div class="form-group"><label>Views</label><div><i class="far fa-eye"></i> ${item.views || 0}</div></div>
+                    <div class="form-group"><label>Posted by</label><div><img src="${item.posterImage || 'https://placehold.co/40x40/1e2f3d/white?text=U'}" style="width:32px;height:32px;border-radius:50%;vertical-align:middle;margin-right:8px;" /> ${item.posterName || 'Anonymous'}</div></div>
+                `;
+            } else {
+                detailsHtml = `
+                    <div class="form-group"><label>Job Title</label><div style="font-weight:600; font-size:1.2rem;">${item.title}</div></div>
+                    <div class="form-group"><label>Company</label><div style="font-weight:600;">${item.company}</div></div>
+                    <div class="form-group"><label>Employment Type</label><div>${item.employmentType || 'N/A'}</div></div>
+                    <div class="form-group"><label>Salary</label><div style="font-weight:700; color:var(--primary);">${item.salary || 'Negotiable'}</div></div>
+                    <div class="form-group"><label>Location</label><div><i class="fas fa-map-marker-alt"></i> ${item.location}</div></div>
+                    <div class="form-group"><label>Description</label><div>${item.description || 'N/A'}</div></div>
+                    <div class="form-group"><label>Requirements</label><div>${item.requirements || 'N/A'}</div></div>
+                    <div class="form-group"><label>Posted by</label><div><img src="${item.posterImage || 'https://placehold.co/40x40/1e2f3d/white?text=U'}" style="width:32px;height:32px;border-radius:50%;vertical-align:middle;margin-right:8px;" /> ${item.posterName || 'Anonymous'}</div></div>
+                `;
+            }
+
+            openModal(`
+                <h2><i class="fas ${titleIcon}" style="color: ${titleColor};"></i> ${type.charAt(0).toUpperCase() + type.slice(1)} Details</h2>
+                ${detailsHtml}
+                <div class="form-group"><label>Contact</label>
+                    <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-top:0.5rem;">
+                        <a href="https://wa.me/265${phone.replace(/^0/, '')}?text=Hi%20I%20am%20interested%20in%20${encodeURIComponent(item.title)}" target="_blank" class="btn-whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                        <a href="sms:${phone}?body=Hi%20I%20am%20interested%20in%20${encodeURIComponent(item.title)}" class="btn-sms"><i class="fas fa-sms"></i> SMS</a>
+                    </div>
+                </div>
+                <div class="form-actions"><button type="button" class="btn-secondary" onclick="closeModal()">Close</button></div>
+            `);
+        } catch (error) {
+            showToast('Error loading details', 'error');
+        }
+    }
+
+    // ============================================================
+    // HOME (unchanged)
+    // ============================================================
+    async function showHome() {
+        currentView = 'home';
+        setActiveNav('navHome');
+        document.getElementById('pageTitle').innerHTML = '<i class="fas fa-store-alt"></i> NjalaMarket';
+        document.getElementById('app').innerHTML = `<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading...</div>`;
+        try {
+            const [products, properties, jobs] = await Promise.all([
+                apiRequest('/api/products'),
+                apiRequest('/api/properties'),
+                apiRequest('/api/jobs')
+            ]);
+            const allItems = [
+                ...(products.products || []).map(p => ({ ...p, type: 'product' })),
+                ...(properties.properties || []).map(p => ({ ...p, type: 'property' })),
+                ...(jobs.jobs || []).map(j => ({ ...j, type: 'job' }))
+            ].slice(0, 6);
+            let gridHtml;
+            if (allItems.length === 0) {
+                gridHtml = `
+                    <div class="empty-state">
+                        <div class="empty-icon"><i class="fas fa-box-open"></i></div>
+                        <h3>No listings yet</h3>
+                        <p>Be the first to post on NjalaMarket!</p>
+                        ${currentUser ? `<button class="btn-primary" onclick="showPostForm('items')"><i class="fas fa-plus"></i> Post Now</button>` : `<button class="btn-primary" onclick="showAuth()"><i class="fas fa-user"></i> Sign in to post</button>`}
+                    </div>
+                `;
+            } else {
+                gridHtml = allItems.map(item => renderListingCard(item, false)).join('');
+            }
+            const greeting = currentUser ? `<span class="greeting">👋 Welcome, ${currentUser.name}</span>` : '';
+            const isOwner = currentUser && currentUser.role === 'admin';
+            document.getElementById('app').innerHTML = `
+                <div class="owner-message-section">
+                    <div class="owner-message-card">
+                        <div class="owner-message-header"><i class="fas fa-bullhorn"></i><span>From the Owner</span></div>
+                        <div class="owner-message-content" id="ownerMessageContent"><div class="message-loading"><i class="fas fa-spinner fa-spin"></i> Loading message...</div></div>
+                        ${isOwner ? `<button class="btn-edit-message" onclick="openEditMessageModal()"><i class="fas fa-edit"></i> Edit Message</button>` : ''}
+                    </div>
+                </div>
+                <div class="hero">
+                    <div class="hero-content">
+                        <h1>Malawi's Premier Marketplace</h1>
+                        <p>Buy, sell, rent, and find opportunities across the country. Trusted by thousands daily.</p>
+                        ${currentUser ? `<button class="btn-primary" onclick="showPostForm('items')"><i class="fas fa-plus"></i> Post Free Ad</button>` : `<button class="btn-primary" onclick="showAuth()"><i class="fas fa-user"></i> Get Started</button>`}
+                    </div>
+                </div>
+                <div class="features">
+                    <div class="feature-card items" onclick="showSection('items')">
+                        <div class="icon-wrap"><i class="fas fa-mobile-alt"></i></div>
+                        <h3>Buy &amp; Sell</h3>
+                        <p>Electronics, cars, fashion, farm tools — find the best deals in Malawi.</p>
+                    </div>
+                    <div class="feature-card properties" onclick="showSection('properties')">
+                        <div class="icon-wrap"><i class="fas fa-home"></i></div>
+                        <h3>Property &amp; Land</h3>
+                        <p>Rent, buy, or lease houses, land, and commercial spaces.</p>
+                    </div>
+                    <div class="feature-card jobs" onclick="showSection('jobs')">
+                        <div class="icon-wrap"><i class="fas fa-chart-line"></i></div>
+                        <h3>Careers</h3>
+                        <p>Explore top jobs or hire skilled talent instantly.</p>
+                    </div>
+                </div>
+                <div class="section-header"><h2>✨ Fresh Marketplace Highlights</h2>${greeting}</div>
+                <div class="search-bar">
+                    <input type="text" id="searchQuery" placeholder="🔍 Search by name..." />
+                    <select id="searchCategory">
+                        <option value="">All Categories</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Furniture">Furniture</option>
+                        <option value="Clothing">Clothing</option>
+                        <option value="Vehicles">Vehicles</option>
+                        <option value="Property">Property</option>
+                        <option value="Jobs">Jobs</option>
+                    </select>
+                    <input type="text" id="searchLocation" placeholder="📍 Location..." />
+                    <button class="btn-primary" onclick="applySearch()"><i class="fas fa-search"></i> Search</button>
+                    <button class="btn-secondary" onclick="clearSearch()">Clear</button>
+                </div>
+                <div class="listings-grid" id="searchResults">${gridHtml}</div>
+            `;
+            await fetchOwnerMessage();
+        } catch (error) {
+            document.getElementById('app').innerHTML = `<div class="empty-state"><div class="empty-icon"><i class="fas fa-exclamation-triangle"></i></div><h3>Unable to load listings</h3><p>Please check your connection and try again.</p><button class="btn-primary" onclick="showHome()"><i class="fas fa-refresh"></i> Retry</button></div>`;
+        }
+    }
+
+    async function applySearch() {
+        const query = document.getElementById('searchQuery').value.toLowerCase().trim();
+        const category = document.getElementById('searchCategory').value;
+        const location = document.getElementById('searchLocation').value.toLowerCase().trim();
+
+        try {
+            const [products, properties, jobs] = await Promise.all([
+                apiRequest('/api/products'),
+                apiRequest('/api/properties'),
+                apiRequest('/api/jobs')
+            ]);
+
+            let all = [
+                ...(products.products || []).map(p => ({ ...p, type: 'product' })),
+                ...(properties.properties || []).map(p => ({ ...p, type: 'property' })),
+                ...(jobs.jobs || []).map(j => ({ ...j, type: 'job' }))
+            ];
+
+            if (query) {
+                all = all.filter(item => item.title.toLowerCase().includes(query) || (item.company && item.company.toLowerCase().includes(query)));
+            }
+            if (category) {
+                all = all.filter(item => {
+                    if (item.type === 'product') return item.category === category;
+                    if (item.type === 'property') return item.listingType === category || item.type === category;
+                    if (item.type === 'job') return item.employmentType === category;
+                    return false;
+                });
+            }
+            if (location) {
+                all = all.filter(item => item.location.toLowerCase().includes(location));
+            }
+
+            const grid = document.getElementById('searchResults');
+            if (all.length === 0) {
+                grid.innerHTML = `<div class="empty-state"><div class="empty-icon"><i class="fas fa-search"></i></div><h3>No matches found</h3><p>Try adjusting your search filters.</p></div>`;
+            } else {
+                grid.innerHTML = all.map(item => renderListingCard(item, false)).join('');
+            }
+        } catch (error) {
+            showToast('Error searching listings', 'error');
+        }
+    }
+
+    function clearSearch() {
+        document.getElementById('searchQuery').value = '';
+        document.getElementById('searchCategory').value = '';
+        document.getElementById('searchLocation').value = '';
+        showHome();
+    }
+
+    // ============================================================
+    // SECTION VIEWS (unchanged)
+    // ============================================================
+    async function showSection(section) {
+        currentView = section;
+        const map = {
+            items: { endpoint: 'products', title: '🛍️ Marketplace', navId: 'navItems', type: 'product' },
+            properties: { endpoint: 'properties', title: '🏡 Properties & Rentals', navId: 'navProperties', type: 'property' },
+            jobs: { endpoint: 'jobs', title: '💼 Careers & Jobs', navId: 'navJobs', type: 'job' }
+        };
+        const config = map[section];
+        if (!config) return;
+        setActiveNav(config.navId);
+        document.getElementById('pageTitle').innerHTML = `<i class="fas fa-${section === 'items' ? 'tag' : section === 'properties' ? 'home' : 'briefcase'}"></i> ${config.title.replace(/[^\w\s]/g, '').trim()}`;
+
+        document.getElementById('app').innerHTML = `
+            <div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+        `;
+
+        try {
+            const result = await apiRequest(`/api/${config.endpoint}`);
+            const items = result[config.endpoint] || [];
+
+            const canPost = !!currentUser;
+            const postBtn = canPost
+                ? `<button class="btn-primary" onclick="showPostForm('${section}')"><i class="fas fa-plus"></i> Post Listing</button>`
+                : `<button class="btn-primary" onclick="showAuth()"><i class="fas fa-lock"></i> Sign in to Post</button>`;
+
+            let gridHtml;
+            if (items.length === 0) {
+                gridHtml = `<div class="empty-state"><div class="empty-icon"><i class="fas fa-inbox"></i></div><h3>No listings in this category</h3><p>Be the first to post!</p></div>`;
+            } else {
+                gridHtml = items.map(item => renderListingCard({ ...item, type: config.type }, false)).join('');
+            }
+
+            document.getElementById('app').innerHTML = `
+                <div class="section-header">
+                    <h2>${config.title}</h2>
+                    ${postBtn}
+                </div>
+                <div class="search-bar">
+                    <input type="text" id="sectionSearchQuery" placeholder="🔍 Search by name..." />
+                    <input type="text" id="sectionSearchLocation" placeholder="📍 Location..." />
+                    <button class="btn-primary" onclick="applySectionSearch('${section}')"><i class="fas fa-search"></i> Search</button>
+                    <button class="btn-secondary" onclick="showSection('${section}')">Clear</button>
+                </div>
+                <div class="listings-grid" id="sectionSearchResults">${gridHtml}</div>
+            `;
+        } catch (error) {
+            document.getElementById('app').innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <h3>Unable to load ${section}</h3>
+                    <button class="btn-primary" onclick="showSection('${section}')"><i class="fas fa-refresh"></i> Retry</button>
+                </div>
+            `;
+        }
+    }
+
+    async function applySectionSearch(section) {
+        const query = document.getElementById('sectionSearchQuery').value.toLowerCase().trim();
+        const location = document.getElementById('sectionSearchLocation').value.toLowerCase().trim();
+        const map = {
+            items: { endpoint: 'products', type: 'product' },
+            properties: { endpoint: 'properties', type: 'property' },
+            jobs: { endpoint: 'jobs', type: 'job' }
+        };
+        const config = map[section];
+        try {
+            const result = await apiRequest(`/api/${config.endpoint}`);
+            let items = result[config.endpoint] || [];
+            items = items.map(item => ({ ...item, type: config.type }));
+
+            if (query) items = items.filter(item => item.title.toLowerCase().includes(query) || (item.company && item.company.toLowerCase().includes(query)));
+            if (location) items = items.filter(item => item.location.toLowerCase().includes(location));
+
+            const grid = document.getElementById('sectionSearchResults');
+            if (items.length === 0) {
+                grid.innerHTML = `<div class="empty-state"><div class="empty-icon"><i class="fas fa-search"></i></div><h3>No matches found</h3></div>`;
+            } else {
+                grid.innerHTML = items.map(item => renderListingCard(item, false)).join('');
+            }
+        } catch (error) {
+            showToast('Error searching', 'error');
+        }
+    }
+
+    // ============================================================
+    // PROFILE SETTINGS (unchanged)
+    // ============================================================
+    function openProfileSettings() {
+        if (!currentUser) { showAuth(); return; }
+        const user = currentUser;
+        openModal(`
+            <h2><i class="fas fa-user-cog" style="color: var(--accent);"></i> Profile Settings</h2>
+            <form id="profileForm" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label>Profile Picture</label>
+                    <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+                        <div style="width:80px;height:80px;border-radius:50%;overflow:hidden;background:var(--bg);border:3px solid var(--accent);">
+                            ${user.profilePicture ? `<img src="${user.profilePicture}" style="width:100%;height:100%;object-fit:cover;" />` : `<i class="fas fa-user" style="font-size:2.5rem;display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-secondary);"></i>`}
+                        </div>
+                        <input type="file" name="profilePicture" accept="image/*" id="profileImageInput" style="flex:1;" />
+                    </div>
+                    <div id="profileImagePreview" style="margin-top:0.5rem;display:none;">
+                        <div class="cropper-container"><img id="cropImage" src="" alt="Crop preview" /></div>
+                        <div class="image-actions">
+                            <button type="button" class="btn-success" onclick="confirmProfileCrop()"><i class="fas fa-crop-alt"></i> Crop</button>
+                            <button type="button" class="btn-secondary" onclick="skipProfileCrop()"><i class="fas fa-forward"></i> Skip</button>
+                            <button type="button" class="btn-danger" onclick="cancelProfileImage()"><i class="fas fa-times"></i> Remove</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group"><label>Full Name *</label><input name="name" value="${user.name || ''}" required /></div>
+                <div class="form-group"><label>Phone Number</label><input name="phone" value="${user.phone || ''}" /></div>
+                <div class="form-group"><label>Location (District)</label><input name="district" value="${user.district || ''}" /></div>
+                <div class="form-group">
+                    <label>Gender</label>
+                    <select name="gender">
+                        <option value="">Select...</option>
+                        <option value="Male" ${user.gender === 'Male' ? 'selected' : ''}>Male</option>
+                        <option value="Female" ${user.gender === 'Female' ? 'selected' : ''}>Female</option>
+                        <option value="Other" ${user.gender === 'Other' ? 'selected' : ''}>Other</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Save Profile</button>
+                    <button type="button" class="btn-danger" onclick="confirmDeleteAccount()"><i class="fas fa-user-slash"></i> Delete Account</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+                </div>
+            </form>
+        `);
+
+        let profileImageData = null;
+        const imgInput = document.getElementById('profileImageInput');
+        if (imgInput) {
+            imgInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        const container = document.getElementById('profileImagePreview');
+                        const img = document.getElementById('cropImage');
+                        img.src = ev.target.result;
+                        container.style.display = 'block';
+                        initCropper(ev.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        window.confirmProfileCrop = function() {
+            const cropped = getCroppedImage();
+            if (cropped) {
+                profileImageData = cropped;
+                document.getElementById('profileImagePreview').style.display = 'none';
+                if (cropper) { cropper.destroy(); cropper = null; }
+                showToast('✅ Profile picture cropped!', 'success');
+            }
+        };
+        window.skipProfileCrop = function() {
+            const skipped = getSkippedImage();
+            if (skipped) {
+                profileImageData = skipped;
+                document.getElementById('profileImagePreview').style.display = 'none';
+                if (cropper) { cropper.destroy(); cropper = null; }
+                showToast('✅ Profile picture saved!', 'success');
+            }
+        };
+        window.cancelProfileImage = function() {
+            profileImageData = null;
+            document.getElementById('profileImagePreview').style.display = 'none';
+            document.getElementById('profileImageInput').value = '';
+            if (cropper) { cropper.destroy(); cropper = null; }
+        };
+
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fd = new FormData(e.target);
+            if (profileImageData) {
+                fd.append('profilePictureData', profileImageData);
+            }
+            try {
+                const result = await apiRequest('/api/auth/profile', 'PUT', fd, true);
+                if (result.success) {
+                    localStorage.setItem('user', JSON.stringify(result.user));
+                    currentUser = result.user;
+                    updateSidebarUI();
+                    closeModal();
+                    showToast('✅ Profile updated successfully!', 'success');
+                }
+            } catch (error) {
+                showToast('❌ Error updating profile: ' + error.message, 'error');
+            }
+        });
+    }
+
+    function confirmDeleteAccount() {
+        if (!confirm('Are you sure you want to delete your account? This action is irreversible.')) return;
+        if (!confirm('Please confirm again: All your listings will be permanently removed.')) return;
+        showToast('⚠️ Account deletion request sent to admin.', 'info');
+        closeModal();
+    }
+
+    // ============================================================
+    // ALL USERS (unchanged)
+    // ============================================================
+    async function showAllUsers() {
+        currentView = 'users';
+        document.getElementById('pageTitle').innerHTML = '<i class="fas fa-users"></i> All Users';
+        document.getElementById('app').innerHTML = `
+            <div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading users...</div>
+        `;
+        try {
+            const result = await apiRequest('/api/users');
+            const users = result.users || [];
+            allUsers = users;
+            document.getElementById('userCountBadge').textContent = users.length;
+            let html = `
+                <div class="section-header"><h2><i class="fas fa-users"></i> Registered Users</h2><span class="greeting">${users.length} total</span></div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;">
+            `;
+            users.forEach(u => {
+                const online = u.isOnline ? 'Online' : 'Offline';
+                const onlineColor = u.isOnline ? 'var(--success)' : 'var(--text-secondary)';
+                html += `
+                    <div style="background:var(--card-bg);border-radius:var(--radius-sm);padding:1rem;border:1px solid var(--border);display:flex;align-items:center;gap:1rem;">
+                        <div style="width:48px;height:48px;border-radius:50%;overflow:hidden;background:var(--bg);flex-shrink:0;">
+                            ${u.profilePicture ? `<img src="${u.profilePicture}" style="width:100%;height:100%;object-fit:cover;" />` : `<i class="fas fa-user" style="display:flex;align-items:center;justify-content:center;height:100%;font-size:1.5rem;color:var(--text-secondary);"></i>`}
+                        </div>
+                        <div>
+                            <div style="font-weight:600;">${u.name}</div>
+                            <div style="font-size:0.8rem;color:var(--text-secondary);">${u.district || 'N/A'} ${u.gender ? '· ' + u.gender : ''}</div>
+                            <div style="font-size:0.7rem;color:${onlineColor};"><i class="fas fa-circle" style="font-size:0.5rem;"></i> ${online}</div>
+                            <button class="btn-primary" style="margin-top:0.3rem;padding:0.2rem 0.8rem;font-size:0.7rem;" onclick="startChat('${u._id}')"><i class="fas fa-comment"></i> Chat</button>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            document.getElementById('app').innerHTML = html;
+        } catch (error) {
+            document.getElementById('app').innerHTML = `<div class="empty-state"><h3>Unable to load users</h3><button class="btn-primary" onclick="showAllUsers()">Retry</button></div>`;
+        }
+    }
+
+    // ============================================================
+    // FRIENDS (unchanged)
+    // ============================================================
+    async function showFriends() {
+        currentView = 'friends';
+        document.getElementById('pageTitle').innerHTML = '<i class="fas fa-user-friends"></i> Friends';
+        try {
+            const result = await apiRequest('/api/users');
+            const users = result.users || [];
+            document.getElementById('friendCountBadge').textContent = users.length;
+            let html = `
+                <div class="section-header"><h2><i class="fas fa-user-friends"></i> All Users (Friends)</h2></div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;">
+            `;
+            users.forEach(u => {
+                html += `
+                    <div style="background:var(--card-bg);border-radius:var(--radius-sm);padding:1.5rem;text-align:center;border:1px solid var(--border);">
+                        <div style="width:64px;height:64px;border-radius:50%;background:var(--bg);margin:0 auto 0.5rem;display:flex;align-items:center;justify-content:center;font-size:2rem;color:var(--text-secondary);overflow:hidden;">
+                            ${u.profilePicture ? `<img src="${u.profilePicture}" style="width:100%;height:100%;object-fit:cover;" />` : `<i class="fas fa-user"></i>`}
+                        </div>
+                        <div style="font-weight:600;">${u.name}</div>
+                        <div style="font-size:0.8rem;color:var(--text-secondary);">${u.isOnline ? '🟢 Online' : '⚪ Offline'}</div>
+                        <button class="btn-primary" style="margin-top:0.5rem;padding:0.3rem 1rem;font-size:0.8rem;" onclick="startChat('${u._id}')"><i class="fas fa-comment"></i> Chat</button>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            document.getElementById('app').innerHTML = html;
+        } catch (e) {
+            document.getElementById('app').innerHTML = `<div class="empty-state"><h3>Unable to load friends</h3></div>`;
+        }
+    }
+
+    // ============================================================
+    // CHAT - with new features
+    // ============================================================
+    function startChat(userId) {
+        const user = allUsers.find(u => u._id === userId);
+        if (!user) { showToast('User not found', 'error'); return; }
+        showChat();
+        setTimeout(() => {
+            selectChatUser(userId);
+        }, 300);
+    }
+
+    async function showChat() {
+        currentView = 'chat';
+        document.getElementById('pageTitle').innerHTML = '<i class="fas fa-comment-dots"></i> Chat';
+        try {
+            const result = await apiRequest('/api/users');
+            const users = result.users || [];
+            allUsers = users;
+            let chatItems = users.map(u => {
+                return `
+                    <div class="chat-item" onclick="selectChatUser('${u._id}')" data-userid="${u._id}">
+                        <img src="${u.profilePicture || 'https://placehold.co/44x44/1e2f3d/white?text=' + u.name.charAt(0)}" alt="${u.name}" />
+                        <div class="info">
+                            <div class="name">${u.name}</div>
+                            <div class="last-msg">${u.isOnline ? '🟢 Online' : '⚪ Offline'}</div>
+                        </div>
+                        <div class="time"></div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('app').innerHTML = `
+                <div class="section-header"><h2><i class="fas fa-comment-dots"></i> Messages</h2></div>
+                <div class="chat-two-col" id="chatContainer">
+                    <div class="chat-list-col">
+                        <div style="padding:0.75rem; font-weight:600; border-bottom:1px solid var(--border);">Conversations</div>
+                        <div class="chat-list" id="chatList">
+                            ${chatItems}
+                        </div>
+                    </div>
+                    <div class="chat-main" id="chatMain">
+                        <div class="chat-header">
+                            <div class="chat-user" id="chatUserHeader">
+                                <img src="https://placehold.co/40x40/1e2f3d/white?text=?" alt="User" />
+                                <div>
+                                    <div class="name" id="chatUserName">Select a user</div>
+                                    <div class="status" id="chatUserStatus"><i class="fas fa-circle" style="color:var(--text-secondary);font-size:0.5rem;"></i> Offline</div>
+                                </div>
+                            </div>
+                            <div style="display:flex;gap:0.5rem;">
+                                <button class="btn-secondary" style="padding:0.2rem 0.8rem;font-size:0.7rem;" onclick="markChatRead()"><i class="fas fa-check-double"></i> Mark read</button>
+                                <button class="btn-primary" style="padding:0.2rem 0.8rem;font-size:0.7rem;" onclick="startVideoCall()"><i class="fas fa-video"></i> Video</button>
+                            </div>
+                        </div>
+                        <div class="typing-indicator" id="typingIndicator">Typing<span class="typing-dots"></span></div>
+                        <div class="chat-messages" id="chatMessages">
+                            <div class="empty-state" style="padding:2rem;"><p>Select a user to start chatting</p></div>
+                        </div>
+                        <div class="chat-input">
+                            <input type="text" placeholder="Type a message..." id="chatInput" disabled />
+                            <button onclick="sendChatMessage()" id="chatSendBtn" disabled><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            if (window._pendingChatUser) {
+                const userId = window._pendingChatUser;
+                const user = allUsers.find(u => u._id === userId);
+                if (user) {
+                    setTimeout(() => selectChatUser(user._id), 200);
+                }
+                window._pendingChatUser = null;
+            }
+
+            if (window.innerWidth <= 768) {
+                document.querySelector('.chat-list-col').classList.add('active');
+                document.querySelector('.chat-main').classList.add('hidden');
+            }
+        } catch (error) {
+            document.getElementById('app').innerHTML = `<div class="empty-state"><h3>Unable to load chat</h3></div>`;
+        }
+    }
+
+    let selectedChatUserId = null;
+
+    function selectChatUser(userId) {
+        const user = allUsers.find(u => u._id === userId);
+        if (!user) return;
+        selectedChatUserId = userId;
+        currentChatUser = user;
+
+        // Update header
+        document.getElementById('chatUserName').textContent = user.name;
+        const statusEl = document.getElementById('chatUserStatus');
+        const online = user.isOnline ? 'Online' : 'Offline';
+        const color = user.isOnline ? 'var(--success)' : 'var(--text-secondary)';
+        statusEl.innerHTML = `<i class="fas fa-circle" style="color:${color};font-size:0.5rem;"></i> ${online}`;
+        document.querySelector('#chatUserHeader img').src = user.profilePicture || `https://placehold.co/40x40/1e2f3d/white?text=${user.name.charAt(0)}`;
+
+        // Enable input
+        document.getElementById('chatInput').disabled = false;
+        document.getElementById('chatSendBtn').disabled = false;
+
+        // Highlight in list
+        document.querySelectorAll('.chat-item').forEach(el => el.classList.remove('active'));
+        const listItem = document.querySelector(`.chat-item[data-userid="${userId}"]`);
+        if (listItem) listItem.classList.add('active');
+
+        // Fetch messages
+        fetchChatMessages(userId);
+
+        // On mobile, hide list and show chat
+        if (window.innerWidth <= 768) {
+            document.querySelector('.chat-list-col').classList.remove('active');
+            document.querySelector('.chat-main').classList.remove('hidden');
+        }
+
+        // Mark as read
+        if (socket) {
+            socket.emit('mark_read', { otherUserId: userId });
+        }
+        // Also mark messages as seen locally and send read receipts
+        markMessagesAsSeen(userId);
+    }
+
+    async function fetchChatMessages(userId) {
+        try {
+            const result = await apiRequest(`/api/chat/messages/${userId}`);
+            chatMessages = result.messages || [];
+            renderChatMessages();
+        } catch (error) {
+            showToast('Error loading messages', 'error');
+        }
+    }
+
+    function renderChatMessages() {
+        const container = document.getElementById('chatMessages');
+        if (!container) return;
+        if (chatMessages.length === 0) {
+            container.innerHTML = `<div class="empty-state" style="padding:2rem;"><p>No messages yet. Say hello!</p></div>`;
+            return;
+        }
+        let html = '';
+        chatMessages.forEach((msg, index) => {
+            const isSent = msg.senderId === currentUser._id;
+            const sender = isSent ? currentUser : currentChatUser;
+            const avatar = sender?.profilePicture || 'https://placehold.co/32x32/1e2f3d/white?text=' + (sender?.name?.charAt(0) || '?');
+            const time = new Date(msg.createdAt);
+            const timeStr = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const dateStr = time.toDateString() === new Date().toDateString() ? 'Today' :
+                           time.toDateString() === new Date(Date.now() - 86400000).toDateString() ? 'Yesterday' :
+                           time.toLocaleDateString();
+            const fullTime = `${dateStr}, ${timeStr}`;
+            // Seen indicator: only for sent messages, show if seen
+            const seenHtml = (isSent && msg.seen) ? `<span class="seen-indicator"><i class="fas fa-check-double"></i> Seen</span>` :
+                             (isSent && !msg.seen) ? `<span class="seen-indicator" style="color:rgba(255,255,255,0.4);"><i class="fas fa-check"></i></span>` : '';
+            html += `
+                <div class="chat-message ${isSent ? 'sent' : 'received'}" data-msgid="${msg._id}">
+                    <div class="message-row">
+                        ${!isSent ? `<img src="${avatar}" class="sender-avatar" alt="avatar" />` : ''}
+                        <div class="bubble" ondblclick="deleteMessage('${msg._id}')">${msg.message}</div>
+                        ${isSent ? `<img src="${avatar}" class="sender-avatar" alt="avatar" />` : ''}
+                    </div>
+                    <div class="message-meta">
+                        <span>${fullTime}</span>
+                        ${seenHtml}
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+        container.scrollTop = container.scrollHeight;
+    }
+
+    function sendChatMessage() {
+        const input = document.getElementById('chatInput');
+        if (!input || !input.value.trim() || !currentChatUser) return;
+        const msg = input.value.trim();
+        if (socket && socket.connected) {
+            socket.emit('send_message', { receiverId: currentChatUser._id, message: msg });
+        } else {
+            apiRequest('/api/chat/messages', 'POST', { receiverId: currentChatUser._id, message: msg })
+                .then(res => {
+                    chatMessages.push(res.message);
+                    renderChatMessages();
+                })
+                .catch(err => showToast('Error sending message', 'error'));
+        }
+        // Optimistically add to UI
+        const tempMsg = { senderId: currentUser._id, message: msg, createdAt: new Date().toISOString(), seen: false };
+        chatMessages.push(tempMsg);
+        renderChatMessages();
+        input.value = '';
+        // Stop typing indication
+        if (socket) socket.emit('stop_typing', { receiverId: currentChatUser._id });
+    }
+
+    function markChatRead() {
+        if (!currentChatUser) return;
+        if (socket) {
+            socket.emit('mark_read', { otherUserId: currentChatUser._id });
+        }
+        chatMessages.forEach(msg => { if (msg.senderId === currentChatUser._id) msg.read = true; });
+        updateUnreadCounts();
+    }
+
+    // ============================================================
+    // TYPING INDICATOR
+    // ============================================================
+    function showTypingIndicator(show) {
+        const el = document.getElementById('typingIndicator');
+        if (el) {
+            el.classList.toggle('active', show);
+        }
+    }
+
+    // Setup typing on input
+    document.addEventListener('input', function(e) {
+        if (e.target && e.target.id === 'chatInput') {
+            if (!currentChatUser || !socket) return;
+            if (e.target.value.trim().length > 0) {
+                if (!isTyping) {
+                    isTyping = true;
+                    socket.emit('typing', { receiverId: currentChatUser._id });
+                }
+                clearTimeout(typingTimeout);
+                typingTimeout = setTimeout(() => {
+                    isTyping = false;
+                    socket.emit('stop_typing', { receiverId: currentChatUser._id });
+                }, 1500);
+            } else {
+                if (isTyping) {
+                    isTyping = false;
+                    socket.emit('stop_typing', { receiverId: currentChatUser._id });
+                }
+            }
+        }
+    });
+
+    // ============================================================
+    // READ RECEIPTS: mark messages as seen when chat is opened
+    // ============================================================
+    function markMessagesAsSeen(userId) {
+        if (!socket) return;
+        // Find last message from other user that is not seen
+        const unseen = chatMessages.filter(m => m.senderId === userId && !m.seen);
+        if (unseen.length === 0) return;
+        // Mark each as seen by sending a read receipt for each
+        unseen.forEach(msg => {
+            socket.emit('message_read', { messageId: msg._id });
+            msg.seen = true;
+        });
+        // Also update UI
+        renderChatMessages();
+    }
+
+    // ============================================================
+    // DELETE MESSAGE (double click)
+    // ============================================================
+    async function deleteMessage(messageId) {
+        if (!currentUser) return;
+        const msg = chatMessages.find(m => m._id === messageId);
+        if (!msg) return;
+        // Only allow deletion of own messages
+        if (msg.senderId !== currentUser._id) {
+            showToast('You can only delete your own messages.', 'error');
+            return;
+        }
+        if (!confirm('Delete this message?')) return;
+        try {
+            // Use REST API or socket
+            if (socket) {
+                socket.emit('delete_message', { messageId });
+            } else {
+                await apiRequest(`/api/chat/messages/${messageId}`, 'DELETE');
+                // Remove locally
+                chatMessages = chatMessages.filter(m => m._id !== messageId);
+                renderChatMessages();
+                showToast('💬 Message deleted', 'success');
+            }
+        } catch (e) {
+            showToast('Error deleting message', 'error');
+        }
+    }
+
+    // ============================================================
+    // VIDEO CALL (WebRTC)
+    // ============================================================
+    function startVideoCall() {
+        if (!currentChatUser) { showToast('Select a user first', 'error'); return; }
+        if (callInProgress) { showToast('Call already in progress', 'error'); return; }
+        if (!socket || !socket.connected) { showToast('Socket not connected', 'error'); return; }
+
+        // Notify the other user
+        socket.emit('call_user', { to: currentChatUser._id, name: currentUser.name });
+        callInProgress = true;
+        showToast('📞 Calling...', 'info');
+
+        // Show video overlay (local only for now)
+        document.getElementById('videoCallOverlay').classList.add('active');
+        // Get local stream
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+            .then(stream => {
+                localStream = stream;
+                document.getElementById('localVideo').srcObject = stream;
+            })
+            .catch(err => {
+                showToast('Could not access camera/mic: ' + err.message, 'error');
+                endCall();
+            });
+    }
+
+    function acceptCall() {
+        if (!incomingCallData) return;
+        document.getElementById('incomingCall').classList.remove('active');
+        const { from } = incomingCallData;
+        // Notify the caller we accepted
+        socket.emit('call_accepted', { to: from });
+        callInProgress = true;
+        document.getElementById('videoCallOverlay').classList.add('active');
+        // Get local stream and prepare for WebRTC
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+            .then(stream => {
+                localStream = stream;
+                document.getElementById('localVideo').srcObject = stream;
+                // Create peer connection and answer
+                createPeerConnection(from);
+                // Create answer
+                peerConnection.createOffer()
+                    .then(offer => peerConnection.setLocalDescription(offer))
+                    .then(() => {
+                        socket.emit('webrtc_offer', { to: from, sdp: peerConnection.localDescription });
+                    });
+            })
+            .catch(err => {
+                showToast('Could not access media: ' + err.message, 'error');
+                endCall();
+            });
+        incomingCallData = null;
+    }
+
+    function declineCall() {
+        if (!incomingCallData) return;
+        socket.emit('call_declined', { to: incomingCallData.from });
+        document.getElementById('incomingCall').classList.remove('active');
+        incomingCallData = null;
+    }
+
+    function initiateCall(toUserId) {
+        // Called when other side accepted
+        createPeerConnection(toUserId);
+        // Create offer
+        peerConnection.createOffer()
+            .then(offer => peerConnection.setLocalDescription(offer))
+            .then(() => {
+                socket.emit('webrtc_offer', { to: toUserId, sdp: peerConnection.localDescription });
+            });
+    }
+
+    function createPeerConnection(otherUserId) {
+        const config = {
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' }
+            ]
+        };
+        peerConnection = new RTCPeerConnection(config);
+
+        // Add local stream tracks
+        if (localStream) {
+            localStream.getTracks().forEach(track => {
+                peerConnection.addTrack(track, localStream);
+            });
+        }
+
+        peerConnection.ontrack = (event) => {
+            if (!remoteStream) {
+                remoteStream = new MediaStream();
+                document.getElementById('remoteVideo').srcObject = remoteStream;
+            }
+            remoteStream.addTrack(event.track);
+        };
+
+        peerConnection.onicecandidate = (event) => {
+            if (event.candidate) {
+                socket.emit('webrtc_ice', { to: otherUserId, candidate: event.candidate });
+            }
+        };
+
+        peerConnection.oniceconnectionstatechange = () => {
+            if (peerConnection.iceConnectionState === 'disconnected' ||
+                peerConnection.iceConnectionState === 'failed') {
+                endCall();
+                showToast('Call disconnected', 'error');
+            }
+        };
+    }
+
+    async function handleWebRTCAnswer(from, sdp) {
+        if (!peerConnection) {
+            createPeerConnection(from);
+        }
+        await peerConnection.setRemoteDescription(new RTCSessionDescription(sdp));
+        // Create answer
+        await peerConnection.setLocalDescription(await peerConnection.createAnswer());
+        socket.emit('webrtc_answer', { to: from, sdp: peerConnection.localDescription });
+    }
+
+    function toggleMute() {
+        if (!localStream) return;
+        const audioTrack = localStream.getAudioTracks()[0];
+        if (audioTrack) {
+            audioTrack.enabled = !audioTrack.enabled;
+            const btn = document.querySelector('.btn-mute-toggle');
+            btn.innerHTML = audioTrack.enabled ? '<i class="fas fa-microphone"></i> Mute' : '<i class="fas fa-microphone-slash"></i> Unmute';
+        }
+    }
+
+    function endCall() {
+        callInProgress = false;
+        if (peerConnection) {
+            peerConnection.close();
+            peerConnection = null;
+        }
+        if (localStream) {
+            localStream.getTracks().forEach(track => track.stop());
+            localStream = null;
+        }
+        if (remoteStream) {
+            remoteStream.getTracks().forEach(track => track.stop());
+            remoteStream = null;
+        }
+        document.getElementById('remoteVideo').srcObject = null;
+        document.getElementById('localVideo').srcObject = null;
+        document.getElementById('videoCallOverlay').classList.remove('active');
+        document.getElementById('incomingCall').classList.remove('active');
+        if (socket && currentChatUser) {
+            socket.emit('call_ended', { to: currentChatUser._id });
+        }
+        showToast('Call ended', 'info');
+    }
+
+    // ============================================================
+    // NOTIFICATIONS (unchanged)
+    // ============================================================
+    async function showNotifications() {
+        currentView = 'notifications';
+        document.getElementById('pageTitle').innerHTML = '<i class="fas fa-bell"></i> Notifications';
+        document.getElementById('app').innerHTML = `
+            <div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading notifications...</div>
+        `;
+        try {
+            const result = await apiRequest('/api/notifications');
+            const notifications = result.notifications || [];
+            const unread = result.unread || 0;
+            document.getElementById('notifBadge').textContent = unread;
+            document.getElementById('notifDot').style.display = unread > 0 ? 'block' : 'none';
+
+            let html = `
+                <div class="section-header"><h2><i class="fas fa-bell"></i> Notifications</h2>
+                    <button class="btn-secondary" onclick="markAllNotificationsRead()"><i class="fas fa-check-double"></i> Mark all read</button>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:0.75rem;">
+            `;
+            if (notifications.length === 0) {
+                html += `<div class="empty-state"><p>No notifications</p></div>`;
+            } else {
+                notifications.forEach(n => {
+                    const isRead = n.read;
+                    const bg = isRead ? 'var(--card-bg)' : 'var(--bg)';
+                    const border = isRead ? 'var(--border)' : 'var(--accent)';
+                    html += `
+                        <div style="background:${bg};padding:1rem 1.25rem;border-radius:var(--radius-sm);border-left:4px solid ${border};display:flex;align-items:center;gap:1rem;">
+                            <div style="flex:1;">
+                                <div style="font-weight:${isRead ? '400' : '600'};">${n.title}</div>
+                                <div style="color:var(--text-secondary);font-size:0.9rem;">${n.body}</div>
+                                <div style="font-size:0.75rem;color:var(--text-secondary);">${new Date(n.createdAt).toLocaleString()}</div>
+                            </div>
+                            ${!isRead ? `<button class="btn-primary" style="padding:0.2rem 0.8rem;font-size:0.7rem;" onclick="markNotificationRead('${n._id}')"><i class="fas fa-check"></i> Mark read</button>` : ''}
+                            <button class="btn-danger" style="padding:0.2rem 0.8rem;font-size:0.7rem;" onclick="deleteNotification('${n._id}')"><i class="fas fa-trash"></i></button>
+                        </div>
+                    `;
+                });
+            }
+            html += `</div>`;
+            document.getElementById('app').innerHTML = html;
+        } catch (error) {
+            document.getElementById('app').innerHTML = `<div class="empty-state"><h3>Unable to load notifications</h3></div>`;
+        }
+    }
+
+    async function markNotificationRead(id) {
+        try {
+            await apiRequest(`/api/notifications/${id}/read`, 'PUT');
+            showToast('✅ Marked as read', 'success');
+            showNotifications();
+        } catch (e) {
+            showToast('Error marking read', 'error');
+        }
+    }
+
+    async function markAllNotificationsRead() {
+        try {
+            await apiRequest('/api/notifications/read-all', 'PUT');
+            showToast('✅ All marked as read', 'success');
+            showNotifications();
+        } catch (e) {
+            showToast('Error', 'error');
+        }
+    }
+
+    async function deleteNotification(id) {
+        if (!confirm('Delete this notification?')) return;
+        try {
+            await apiRequest(`/api/notifications/${id}`, 'DELETE');
+            showToast('🗑️ Deleted', 'success');
+            showNotifications();
+        } catch (e) {
+            showToast('Error deleting', 'error');
+        }
+    }
+
+    // ============================================================
+    // CONTACT OWNER (unchanged)
+    // ============================================================
+    function openContactOwner() {
+        openModal(`
+            <h2><i class="fas fa-envelope" style="color: var(--accent);"></i> Contact Website Owner</h2>
+            <form id="contactOwnerForm">
+                <div class="form-group"><label>Your Name</label><input name="name" value="${currentUser?.name || ''}" required /></div>
+                <div class="form-group"><label>Your Email</label><input type="email" name="email" value="${currentUser?.email || ''}" required /></div>
+                <div class="form-group"><label>Subject</label><input name="subject" placeholder="What is this about?" required /></div>
+                <div class="form-group"><label>Message</label><textarea name="message" rows="4" placeholder="Write your message here..." required></textarea></div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary"><i class="fas fa-paper-plane"></i> Send</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+                </div>
+            </form>
+        `);
+        document.getElementById('contactOwnerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fd = new FormData(e.target);
+            const data = Object.fromEntries(fd.entries());
+            try {
+                await apiRequest('/api/contact', 'POST', data);
+                showToast('✅ Message sent to the owner!', 'success');
+                closeModal();
+            } catch (error) {
+                showToast('❌ Failed to send message', 'error');
+            }
+        });
+    }
+
+    // ============================================================
+    // FORGOT PASSWORD (unchanged)
+    // ============================================================
+    function showForgotPassword() {
+        openModal(`
+            <h2><i class="fas fa-key" style="color: var(--warning);"></i> Reset Password</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">Enter your phone number to receive a reset code via SMS.</p>
+            <form id="forgotPasswordForm">
+                <div class="form-group">
+                    <label>Phone Number *</label>
+                    <input type="tel" id="resetPhone" placeholder="0999123456" required />
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary"><i class="fas fa-paper-plane"></i> Send Code</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+                </div>
+            </form>
+            <div id="resetCodeSection" style="display: none; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">Enter the 6-digit code sent to your phone.</p>
+                <form id="verifyCodeForm">
+                    <div class="form-group"><label>Reset Code *</label><input type="text" id="resetCode" placeholder="123456" maxlength="6" required /></div>
+                    <div class="form-group"><label>New Password (optional)</label><input type="password" id="newPassword" placeholder="Leave blank to keep old password" minlength="6" /></div>
+                    <div class="form-group" style="display: flex; gap: 0.5rem; align-items: center;">
+                        <input type="checkbox" id="keepOldPassword" style="width: auto;" />
+                        <label for="keepOldPassword" style="margin: 0; font-weight: 400; font-size: 0.85rem;">Keep my old password</label>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary"><i class="fas fa-check"></i> Reset Password</button>
+                        <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        `);
+        document.getElementById('forgotPasswordForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const phone = document.getElementById('resetPhone').value.trim();
+            if (!phone) { showToast('Please enter your phone number', 'error'); return; }
+            if (!phone.match(/^[0-9]{10,12}$/)) {
+                showToast('Please enter a valid phone number (e.g. 0999123456)', 'error');
+                return;
+            }
+            try {
+                const result = await apiRequest('/api/auth/forgot-password', 'POST', { phone });
+                if (result.success) {
+                    resetPhone = phone;
+                    showToast('✅ Reset code sent to your phone!', 'success');
+                    document.getElementById('resetCodeSection').style.display = 'block';
+                }
+            } catch (error) {
+                showToast('❌ ' + error.message, 'error');
+            }
+        });
+        document.getElementById('verifyCodeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const code = document.getElementById('resetCode').value.trim();
+            const newPassword = document.getElementById('newPassword').value;
+            const keepOldPassword = document.getElementById('keepOldPassword').checked;
+            if (!code) { showToast('Please enter the reset code', 'error'); return; }
+            if (!keepOldPassword && !newPassword) {
+                showToast('Please enter a new password or check "Keep my old password"', 'error');
+                return;
+            }
+            try {
+                const verifyResult = await apiRequest('/api/auth/verify-reset-code', 'POST', { phone: resetPhone, code });
+                if (verifyResult.success) {
+                    const resetResult = await apiRequest('/api/auth/reset-password', 'POST', {
+                        phone: resetPhone,
+                        code,
+                        newPassword: keepOldPassword ? undefined : newPassword,
+                        keepOldPassword
+                    });
+                    if (resetResult.success) {
+                        if (resetResult.keepOld) {
+                            showToast('✅ You can continue using your old password', 'success');
+                        } else {
+                            showToast('✅ Password changed successfully!', 'success');
+                        }
+                        closeModal();
+                    }
+                }
+            } catch (error) {
+                showToast('❌ ' + error.message, 'error');
+            }
+        });
+    }
+
+    // ============================================================
+    // POST FORM (unchanged)
+    // ============================================================
+    function showPostForm(section) {
+        if (!currentUser) { showAuth(); return; }
+        pendingSection = section;
+
+        const formMap = {
+            items: `
+                <h2><i class="fas fa-tag" style="color: var(--accent);"></i> Sell an Item</h2>
+                <form id="postForm" enctype="multipart/form-data">
+                    <div class="form-group"><label>Title *</label><input name="title" placeholder="e.g. iPhone 14 Pro Max" required /></div>
+                    <div class="form-group"><label>Price (MK) *</label><input type="number" name="price" placeholder="950000" required /></div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select name="category"><option>Electronics</option><option>Furniture</option><option>Clothing</option><option>Vehicles</option><option>Farm Tools</option><option>Other</option></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Condition</label>
+                        <select name="condition"><option>New</option><option>Like New</option><option>Good</option><option>Fair</option></select>
+                    </div>
+                    <div class="form-group"><label>Location *</label><input name="location" placeholder="e.g. Lilongwe" required /></div>
+                    <div class="form-group"><label>Phone Number *</label><input name="phone" placeholder="0999123456" value="${currentUser.phone || ''}" required /></div>
+                    <div class="form-group">
+                        <label>Upload Image</label>
+                        <input type="file" name="image" accept="image/*" id="imageInput" />
+                        <div id="imagePreviewContainer" style="margin-top: 0.5rem; display: none;">
+                            <div class="cropper-container"><img id="cropImage" src="" alt="Crop preview" /></div>
+                            <div class="image-actions">
+                                <button type="button" class="btn-success" onclick="confirmCrop()"><i class="fas fa-crop-alt"></i> Crop</button>
+                                <button type="button" class="btn-secondary" onclick="skipCrop()"><i class="fas fa-forward"></i> Skip</button>
+                                <button type="button" class="btn-danger" onclick="cancelImage()"><i class="fas fa-times"></i> Remove</button>
+                            </div>
+                        </div>
+                        <div id="imageStatus" style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.3rem;"></div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary"><i class="fas fa-check"></i> Publish</button>
+                        <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+                    </div>
+                </form>
+            `,
+            properties: `
+                <h2><i class="fas fa-home" style="color: #2A7F6E;"></i> List Property</h2>
+                <form id="postForm" enctype="multipart/form-data">
+                    <div class="form-group"><label>Property Title *</label><input name="title" placeholder="e.g. Modern 4BR Villa" required /></div>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select name="type"><option>House</option><option>Land</option><option>Commercial</option><option>Apartment</option></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Listing Type</label>
+                        <select name="listingType"><option>For Rent</option><option>For Sale</option></select>
+                    </div>
+                    <div class="form-group"><label>Price (MK) *</label><input type="number" name="price" required /></div>
+                    <div class="form-group"><label>Bedrooms</label><input type="number" name="bedrooms" placeholder="0 for land" /></div>
+                    <div class="form-group"><label>Location *</label><input name="location" required /></div>
+                    <div class="form-group"><label>Phone Number *</label><input name="phone" placeholder="0999123456" value="${currentUser.phone || ''}" required /></div>
+                    <div class="form-group">
+                        <label>Upload Image</label>
+                        <input type="file" name="image" accept="image/*" id="imageInput" />
+                        <div id="imagePreviewContainer" style="margin-top: 0.5rem; display: none;">
+                            <div class="cropper-container"><img id="cropImage" src="" alt="Crop preview" /></div>
+                            <div class="image-actions">
+                                <button type="button" class="btn-success" onclick="confirmCrop()"><i class="fas fa-crop-alt"></i> Crop</button>
+                                <button type="button" class="btn-secondary" onclick="skipCrop()"><i class="fas fa-forward"></i> Skip</button>
+                                <button type="button" class="btn-danger" onclick="cancelImage()"><i class="fas fa-times"></i> Remove</button>
+                            </div>
+                        </div>
+                        <div id="imageStatus" style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.3rem;"></div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary"><i class="fas fa-check"></i> List Property</button>
+                        <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+                    </div>
+                </form>
+            `,
+            jobs: `
+                <h2><i class="fas fa-bullhorn" style="color: #2C6E9E;"></i> Post a Job</h2>
+                <form id="postForm">
+                    <div class="form-group"><label>Job Title *</label><input name="title" placeholder="e.g. Senior Developer" required /></div>
+                    <div class="form-group"><label>Company *</label><input name="company" required /></div>
+                    <div class="form-group">
+                        <label>Employment Type</label>
+                        <select name="employmentType"><option>Full-time</option><option>Part-time</option><option>Remote</option><option>Contract</option></select>
+                    </div>
+                    <div class="form-group"><label>Salary Range</label><input name="salary" placeholder="e.g. 800,000 - 1,200,000" /></div>
+                    <div class="form-group"><label>Location *</label><input name="location" required /></div>
+                    <div class="form-group"><label>Phone Number *</label><input name="phone" placeholder="0999123456" value="${currentUser.phone || ''}" required /></div>
+                    <div class="form-group"><label>Description</label><textarea name="description" rows="2"></textarea></div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary"><i class="fas fa-check"></i> Post Job</button>
+                        <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+                    </div>
+                </form>
+            `
+        };
+
+        openModal(formMap[section]);
+        pendingFormData = null;
+
+        const imageInput = document.getElementById('imageInput');
+        if (imageInput) {
+            imageInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        const container = document.getElementById('imagePreviewContainer');
+                        const img = document.getElementById('cropImage');
+                        img.src = ev.target.result;
+                        container.style.display = 'block';
+                        document.getElementById('imageStatus').textContent = '📸 Image loaded. Crop or skip to continue.';
+                        initCropper(ev.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        const form = document.getElementById('postForm');
+        if (form) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const fd = new FormData(form);
+                if (pendingFormData) {
+                    fd.append('imageData', pendingFormData);
+                }
+                const endpoint = `/api/${section === 'items' ? 'products' : section === 'properties' ? 'properties' : 'jobs'}`;
+                try {
+                    const result = await apiRequest(endpoint, 'POST', fd, true);
+                    closeModal();
+                    showToast('✅ Listing published successfully!', 'success');
+                    showSection(section);
+                } catch (error) {
+                    showToast('❌ Error publishing: ' + error.message, 'error');
+                }
+            });
+        }
+    }
+
+    function confirmCrop() {
+        const cropped = getCroppedImage();
+        if (cropped) {
+            pendingFormData = cropped;
+            document.getElementById('imageStatus').textContent = '✅ Image cropped and ready!';
+            document.getElementById('imagePreviewContainer').style.display = 'none';
+            if (cropper) { cropper.destroy(); cropper = null; }
+        }
+    }
+
+    function skipCrop() {
+        const skipped = getSkippedImage();
+        if (skipped) {
+            pendingFormData = skipped;
+            document.getElementById('imageStatus').textContent = '✅ Image saved (original)';
+            document.getElementById('imagePreviewContainer').style.display = 'none';
+            if (cropper) { cropper.destroy(); cropper = null; }
+        }
+    }
+
+    function cancelImage() {
+        pendingFormData = null;
+        document.getElementById('imagePreviewContainer').style.display = 'none';
+        document.getElementById('imageStatus').textContent = '❌ Image removed';
+        document.getElementById('imageInput').value = '';
+        if (cropper) { cropper.destroy(); cropper = null; }
+    }
+
+    // ============================================================
+    // EDIT LISTING (unchanged)
+    // ============================================================
+    async function editListing(type, id) {
+        try {
+            const endpoint = type === 'product' ? 'products' : type === 'property' ? 'properties' : 'jobs';
+            const result = await apiRequest(`/api/${endpoint}/${id}`);
+            const item = result[type] || result.product || result.property || result.job;
+            if (!item) return;
+
+            editImageData = null;
+
+            let formHtml = '';
+            if (type === 'product') {
+                formHtml = `
+                    <div class="form-group"><label>Title *</label><input name="title" value="${item.title}" required /></div>
+                    <div class="form-group"><label>Price (MK) *</label><input type="number" name="price" value="${item.price}" required /></div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select name="category">
+                            ${['Electronics','Furniture','Clothing','Vehicles','Farm Tools','Other'].map(c => 
+                                `<option ${c === item.category ? 'selected' : ''}>${c}</option>`
+                            ).join('')}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Condition</label>
+                        <select name="condition">
+                            ${['New','Like New','Good','Fair'].map(c => 
+                                `<option ${c === item.condition ? 'selected' : ''}>${c}</option>`
+                            ).join('')}
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Location *</label><input name="location" value="${item.location}" required /></div>
+                    <div class="form-group"><label>Phone Number *</label><input name="phone" value="${item.phone || ''}" required /></div>
+                `;
+            } else if (type === 'property') {
+                formHtml = `
+                    <div class="form-group"><label>Property Title *</label><input name="title" value="${item.title}" required /></div>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select name="type">
+                            ${['House','Land','Commercial','Apartment'].map(c => 
+                                `<option ${c === item.type ? 'selected' : ''}>${c}</option>`
+                            ).join('')}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Listing Type</label>
+                        <select name="listingType">
+                            ${['For Rent','For Sale'].map(c => 
+                                `<option ${c === item.listingType ? 'selected' : ''}>${c}</option>`
+                            ).join('')}
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Price (MK) *</label><input type="number" name="price" value="${item.price}" required /></div>
+                    <div class="form-group"><label>Bedrooms</label><input type="number" name="bedrooms" value="${item.bedrooms || 0}" /></div>
+                    <div class="form-group"><label>Location *</label><input name="location" value="${item.location}" required /></div>
+                    <div class="form-group"><label>Phone Number *</label><input name="phone" value="${item.phone || ''}" required /></div>
+                `;
+            } else {
+                formHtml = `
+                    <div class="form-group"><label>Job Title *</label><input name="title" value="${item.title}" required /></div>
+                    <div class="form-group"><label>Company *</label><input name="company" value="${item.company}" required /></div>
+                    <div class="form-group">
+                        <label>Employment Type</label>
+                        <select name="employmentType">
+                            ${['Full-time','Part-time','Remote','Contract'].map(c => 
+                                `<option ${c === item.employmentType ? 'selected' : ''}>${c}</option>`
+                            ).join('')}
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Salary Range</label><input name="salary" value="${item.salary || ''}" /></div>
+                    <div class="form-group"><label>Location *</label><input name="location" value="${item.location}" required /></div>
+                    <div class="form-group"><label>Phone Number *</label><input name="phone" value="${item.phone || ''}" required /></div>
+                    <div class="form-group"><label>Description</label><textarea name="description" rows="2">${item.description || ''}</textarea></div>
+                    ${type === 'job' ? `<div class="form-group"><label>Requirements</label><textarea name="requirements" rows="2">${item.requirements || ''}</textarea></div>` : ''}
+                `;
+            }
+
+            openModal(`
+                <h2><i class="fas fa-edit" style="color: var(--accent);"></i> Edit ${type.charAt(0).toUpperCase() + type.slice(1)}</h2>
+                <form id="editForm" enctype="multipart/form-data">
+                    ${formHtml}
+                    <div class="form-group">
+                        <label>Upload New Image (optional)</label>
+                        <input type="file" name="image" accept="image/*" id="editImageInput" />
+                        <div id="editImagePreviewContainer" style="margin-top: 0.5rem; display: none;">
+                            <div class="cropper-container"><img id="cropImage" src="" alt="Crop preview" /></div>
+                            <div class="image-actions">
+                                <button type="button" class="btn-success" onclick="confirmCropEdit()"><i class="fas fa-crop-alt"></i> Crop</button>
+                                <button type="button" class="btn-secondary" onclick="skipCropEdit()"><i class="fas fa-forward"></i> Skip</button>
+                                <button type="button" class="btn-danger" onclick="cancelImageEdit()"><i class="fas fa-times"></i> Remove</button>
+                            </div>
+                        </div>
+                        <div id="editImageStatus" style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.3rem;">Current image: ✓</div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Update</button>
+                        <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+                    </div>
+                </form>
+            `);
+
+            const editInput = document.getElementById('editImageInput');
+            if (editInput) {
+                editInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(ev) {
+                            const container = document.getElementById('editImagePreviewContainer');
+                            const img = document.getElementById('cropImage');
+                            img.src = ev.target.result;
+                            container.style.display = 'block';
+                            document.getElementById('editImageStatus').textContent = '📸 New image loaded. Crop or skip to use it.';
+                            initCropper(ev.target.result);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            window.confirmCropEdit = function() {
+                const cropped = getCroppedImage();
+                if (cropped) {
+                    editImageData = cropped;
+                    document.getElementById('editImageStatus').textContent = '✅ Image cropped and ready!';
+                    document.getElementById('editImagePreviewContainer').style.display = 'none';
+                    if (cropper) { cropper.destroy(); cropper = null; }
+                }
+            };
+
+            window.skipCropEdit = function() {
+                const skipped = getSkippedImage();
+                if (skipped) {
+                    editImageData = skipped;
+                    document.getElementById('editImageStatus').textContent = '✅ Image saved (original)';
+                    document.getElementById('editImagePreviewContainer').style.display = 'none';
+                    if (cropper) { cropper.destroy(); cropper = null; }
+                }
+            };
+
+            window.cancelImageEdit = function() {
+                editImageData = null;
+                document.getElementById('editImagePreviewContainer').style.display = 'none';
+                document.getElementById('editImageStatus').textContent = '❌ New image removed, keeping current';
+                document.getElementById('editImageInput').value = '';
+                if (cropper) { cropper.destroy(); cropper = null; }
+            };
+
+            document.getElementById('editForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const fd = new FormData(e.target);
+                if (editImageData) {
+                    fd.append('imageData', editImageData);
+                }
+                try {
+                    const result = await apiRequest(`/api/${endpoint}/${id}`, 'PUT', fd, true);
+                    closeModal();
+                    showToast('✅ Updated successfully!', 'success');
+                    showDashboard();
+                } catch (error) {
+                    showToast('❌ Error updating: ' + error.message, 'error');
+                }
+            });
+        } catch (error) {
+            showToast('Error loading item for editing', 'error');
+        }
+    }
+
+    // ============================================================
+    // DELETE LISTING (unchanged)
+    // ============================================================
+    async function deleteListing(type, id) {
+        if (!confirm('Are you sure you want to delete this listing?')) return;
+        try {
+            const endpoint = type === 'product' ? 'products' : type === 'property' ? 'properties' : 'jobs';
+            await apiRequest(`/api/${endpoint}/${id}`, 'DELETE');
+            showToast('🗑️ Deleted successfully', 'success');
+            showDashboard();
+        } catch (error) {
+            showToast('❌ Error deleting: ' + error.message, 'error');
+        }
+    }
+
+    // ============================================================
+    // AUTH UI (unchanged)
+    // ============================================================
+    function showAuth() {
+        openModal(`
+            <h2><i class="fas fa-sign-in-alt" style="color: var(--accent);"></i> Welcome Back</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="loginPhone" placeholder="0999123456" required />
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required />
+                </div>
+                <div style="text-align: right; margin: -0.5rem 0 1rem 0;">
+                    <button type="button" class="btn-secondary" style="font-size: 0.8rem; padding: 0.3rem 0.8rem; background: none; border: none; color: var(--accent);" onclick="showForgotPassword(); closeModal();">
+                        <i class="fas fa-key"></i> Forgot Password?
+                    </button>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary"><i class="fas fa-arrow-right"></i> Sign In</button>
+                    <button type="button" class="btn-secondary" onclick="showRegisterForm()">Create Account</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+                </div>
+            </form>
+        `);
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const phone = document.getElementById('loginPhone').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const success = await login(phone, password);
+            if (success) closeModal();
+        });
+    }
+
+    function showRegisterForm() {
+        openModal(`
+            <h2><i class="fas fa-user-plus" style="color: var(--success);"></i> Join NjalaMarket</h2>
+            <form id="registerForm">
+                <div class="form-group"><label>Full Name *</label><input name="name" placeholder="e.g. Thandiwe Mwale" required /></div>
+                <div class="form-group"><label>Phone Number *</label><input name="phone" placeholder="0999123456" required /></div>
+                <div class="form-group"><label>District</label><input name="district" placeholder="e.g. Lilongwe" /></div>
+                <div class="form-group">
+                    <label>Gender</label>
+                    <select name="gender"><option value="">Select...</option><option>Male</option><option>Female</option><option>Other</option></select>
+                </div>
+                <div class="form-group"><label>Password *</label><input type="password" name="password" placeholder="Min 6 characters" required minlength="6" /></div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary"><i class="fas fa-user-check"></i> Register</button>
+                    <button type="button" class="btn-secondary" onclick="showAuth()">Back to Login</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+                </div>
+            </form>
+        `);
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fd = new FormData(e.target);
+            const data = Object.fromEntries(fd.entries());
+            const success = await register(data);
+            if (success) closeModal();
+        });
+    }
+
+    // ============================================================
+    // DASHBOARD (unchanged)
+    // ============================================================
+    async function showDashboard() {
+        if (!currentUser) { showAuth(); return; }
+        currentView = 'dashboard';
+        setActiveNav('dashboardLink');
+        document.getElementById('pageTitle').innerHTML = '<i class="fas fa-chart-simple"></i> My Listings';
+
+        document.getElementById('app').innerHTML = `
+            <div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading dashboard...</div>
+        `;
+
+        try {
+            const result = await apiRequest('/api/dashboard');
+            const { stats, products, properties, jobs } = result;
+
+            const allMyListings = [
+                ...(products || []).map(p => ({ ...p, type: 'product' })),
+                ...(properties || []).map(p => ({ ...p, type: 'property' })),
+                ...(jobs || []).map(j => ({ ...j, type: 'job' }))
+            ];
+
+            let listingsHtml;
+            if (allMyListings.length === 0) {
+                listingsHtml = `
+                    <div class="empty-state">
+                        <div class="empty-icon"><i class="fas fa-box-open"></i></div>
+                        <h3>You haven't posted anything yet</h3>
+                        <p>Start selling, renting, or hiring today!</p>
+                    </div>
+                `;
+            } else {
+                listingsHtml = allMyListings.map(item => renderListingCard(item, true)).join('');
+            }
+
+            document.getElementById('app').innerHTML = `
+                <div class="section-header"><h2>📊 Dashboard</h2><span class="greeting">Welcome, ${currentUser.name}</span></div>
+                <div class="dashboard-stats">
+                    <div class="stat-card"><div class="stat-icon" style="color: var(--accent);"><i class="fas fa-box"></i></div><h3>${stats.products}</h3><p>Items for Sale</p></div>
+                    <div class="stat-card"><div class="stat-icon" style="color: #2A7F6E;"><i class="fas fa-building"></i></div><h3>${stats.properties}</h3><p>Properties Listed</p></div>
+                    <div class="stat-card"><div class="stat-icon" style="color: #2C6E9E;"><i class="fas fa-bullhorn"></i></div><h3>${stats.jobs}</h3><p>Job Posts</p></div>
+                </div>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem;">
+                    <button class="btn-primary" onclick="showPostForm('items')"><i class="fas fa-plus"></i> New Item</button>
+                    <button class="btn-primary" onclick="showPostForm('properties')"><i class="fas fa-plus"></i> New Property</button>
+                    <button class="btn-primary" onclick="showPostForm('jobs')"><i class="fas fa-plus"></i> New Job</button>
+                    <button class="btn-secondary" onclick="showHome()"><i class="fas fa-arrow-left"></i> Back</button>
+                </div>
+                <div class="section-header"><h3>📋 Your Listings</h3></div>
+                <div class="listings-grid">${listingsHtml}</div>
+            `;
+        } catch (error) {
+            document.getElementById('app').innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <h3>Unable to load dashboard</h3>
+                    <button class="btn-primary" onclick="showDashboard()"><i class="fas fa-refresh"></i> Retry</button>
+                </div>
+            `;
+        }
+    }
+
+    // ============================================================
+    // LOGOUT
+    // ============================================================
+    function handleLogout() {
+        if (confirm('Are you sure you want to logout?')) {
+            logout();
+        }
+    }
+
+    // ============================================================
+    // PWA - Service Worker Registration
+    // ============================================================
+    if ('serviceWorker' in navigator) {
+        // Create a simple service worker that caches the page
+        const swCode = `
+            self.addEventListener('install', e => {
+                e.waitUntil(
+                    caches.open('njalamarket-v1').then(cache => {
+                        return cache.addAll([
+                            '/',
+                            '/index.html',
+                            'https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap',
+                            'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
+                            'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css'
+                        ]);
+                    })
+                );
+            });
+            self.addEventListener('fetch', e => {
+                e.respondWith(
+                    caches.match(e.request).then(response => response || fetch(e.request))
+                );
+            });
+        `;
+        const blob = new Blob([swCode], { type: 'application/javascript' });
+        const swUrl = URL.createObjectURL(blob);
+        navigator.serviceWorker.register(swUrl)
+            .then(() => console.log('Service Worker registered'))
+            .catch(err => console.log('SW registration failed:', err));
+    }
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    getCurrentUser();
+    updateSidebarUI();
+    if (currentUser) {
+        initSocket();
+    }
+    showHome();
+
+    // Expose functions globally
+    window.startChat = startChat;
+    window.selectChatUser = selectChatUser;
+    window.sendChatMessage = sendChatMessage;
+    window.markChatRead = markChatRead;
+    window.markNotificationRead = markNotificationRead;
+    window.markAllNotificationsRead = markAllNotificationsRead;
+    window.deleteNotification = deleteNotification;
+    window.deleteMessage = deleteMessage;
+    window.startVideoCall = startVideoCall;
+    window.acceptCall = acceptCall;
+    window.declineCall = declineCall;
+    window.endCall = endCall;
+    window.toggleMute = toggleMute;
+    window.showHome = showHome;
+    window.showSection = showSection;
+    window.showPostForm = showPostForm;
+    window.showAuth = showAuth;
+    window.showRegisterForm = showRegisterForm;
+    window.showDashboard = showDashboard;
+    window.showAllUsers = showAllUsers;
+    window.showFriends = showFriends;
+    window.showChat = showChat;
+    window.showNotifications = showNotifications;
+    window.openProfileSettings = openProfileSettings;
+    window.openContactOwner = openContactOwner;
+    window.handleLogout = handleLogout;
+    window.closeModal = closeModal;
+    window.toggleSidebar = toggleSidebar;
+    window.closeSidebar = closeSidebar;
+    window.applySearch = applySearch;
+    window.clearSearch = clearSearch;
+    window.applySectionSearch = applySectionSearch;
+    window.editListing = editListing;
+    window.deleteListing = deleteListing;
+    window.confirmCrop = confirmCrop;
+    window.skipCrop = skipCrop;
+    window.cancelImage = cancelImage;
+    window.initCropper = initCropper;
+    window.getCroppedImage = getCroppedImage;
+    window.getSkippedImage = getSkippedImage;
+    window.fetchOwnerMessage = fetchOwnerMessage;
+    window.openEditMessageModal = openEditMessageModal;
+    window.showDetail = showDetail;
+    window.showToast = showToast;
+    window.confirmDeleteAccount = confirmDeleteAccount;
+    window.showForgotPassword = showForgotPassword;
+</script>
+</body>
+</html>
